@@ -187,14 +187,224 @@ function isContainedInteger(a, m) {
     return -1;
 }
 
-function linkArc(d) {
-    var dx = d.target.x - d.source.x,
-        dy = d.target.y - d.source.y,
-        dr = Math.sqrt(dx * dx + dy * dy)/2;
-    if (d.source.y<d.target.y )
-        return "M" + (xStep+d.source.x) + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.target.x) + "," + d.target.y;
-    else
-        return "M" + (xStep+d.target.x) + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.source.x) + "," + d.source.y;
+
+
+function searchNode() {
+    svg.selectAll(".linePNodes").remove();
+    searchTerm = document.getElementById('search').value;
+    handle.attr("cx", xScaleSlider(valueSlider));
+    recompute();
 }
 
+function mouseoveredLink(l) {
+    if (force.alpha()==0) {
+        // mouseovered(l.source);
+
+        var term1 = l.source.name;
+        var term2 = l.target.name;
+        var list = {};
+        list[term1] = l.source;
+        list[term2] = l.target;
+
+        var listCardId = [];
+        var listTilte = [];
+        var listEvidence = [];
+        var listType = [];
+        var listBoth = {};
+
+        data2.forEach(function(d) {
+            var year = d.year;
+            if (year==l.m){
+                var list = d["Teams"].split(" vs. ");
+                for (var i=0; i<list.length;i++){
+                    if (term1==list[i]){
+                        for (var j=0; j<list.length;j++){
+                            if (term2==list[j]){
+                                if (!listBoth[d.Title.substring(0,10)+"**"+d.Conference]){
+                                    listCardId.push(d["CardId"]);
+                                    listEvidence.push(d.Title+":  "+d["Teams"]);
+                                    listTilte.push(d.Evidence);
+                                    listType.push(d["Location"]);
+                                    listBoth[d.Title.substring(0,10)+"**"+d.Conference] =1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        var x1 = l.source.x;
+        var x2 = l.target.x;
+        var y1 = l.source.y;
+        var y2 = l.target.y;
+        var x3 = xStep+(x1+x2)/2+Math.abs(y1-y2)/2+10;
+        var yGap = 12;
+        var totalSize = yGap*listTilte.length;
+
+        var tipData = new Object();
+        tipData.x = x3;
+        tipData.y = (y1+y2)/2;
+        tipData.a = listTilte;
+        for (var i=0; i<listTilte.length;i++){
+            var y3 = (y1+y2)/2-totalSize/2+(i+0.5)*yGap;
+            svg.append("text")
+                .attr("class", "linkTilte")
+                .attr("x", x3)
+                .attr("y", y3)
+                .text(listEvidence[i]+ " at "+listType[i])
+                .attr("dy", ".21em")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "12px")
+                .style("font-weight", "bold")
+                .style("text-anchor", "left")
+                .style("fill", function(d) {
+                    return getColor(listType[i], 0);
+                })
+                .style("text-shadow", "1px 1px 0 rgba(200, 200, 200, 0.6");
+        }
+
+        svg.selectAll(".linkArc")
+            .style("stroke-opacity", function(l2) {
+                if (l==l2)
+                    return 1;
+                else
+                    return 0.05;
+            });
+
+        svg.selectAll(".linePNodes")
+            .style("stroke-opacity", 0.1);
+
+        nodeG.style("fill-opacity" , function(n) {
+            if (n.name== term1 || n.name== term2)
+                return 1;
+            else
+                return 0.05;
+        });
+
+        svg.selectAll(".nodeLine").style("stroke-opacity" , function(n) {
+            if ((n.name== term1 || n.name== term2)
+                && list[term1].year == n.year)
+                return 1;
+            else
+                return 0.01;
+        });
+        svg.selectAll(".nodeLine1").style("stroke-opacity" , function(n) {
+            if ((n.name== term1 || n.name== term2)
+                && list[term1].year == n.year)
+                return 0.25;
+            else
+                return 0.05;
+        });
+        svg.selectAll(".nodeLine2").style("stroke-opacity" , function(n) {
+            if ((n.name== term1 || n.name== term2)
+                && list[term1].year == n.year)
+                return 0.25;
+            else
+                return 0.05;
+        });
+
+        nodeG.transition().duration(500).attr("transform", function(n) {
+            if (n.name== term1 || n.name== term2){
+                var newX =xStep+xScale(l.m);
+                return "translate(" + newX + "," + n.y + ")"
+            }
+            else{
+                return "translate(" + n.xConnected + "," + n.y + ")"
+            }
+        })
+    }
+}
+function mouseoutedLink(l) {
+    if (force.alpha()==0) {
+        svg.selectAll(".linkTilte").remove();
+        svg.selectAll(".linkArc")
+            .style("stroke-opacity" , 1);
+        nodeG.style("fill-opacity" , 1);
+        nodeG.transition().duration(500).attr("transform", function(n) {
+            return "translate(" +n.xConnected + "," + n.y + ")"
+        })
+        svg.selectAll(".linePNodes")
+            .style("stroke-opacity", 1);
+        svg.selectAll(".nodeLine")
+            .style("stroke-opacity" , 1);
+        svg.selectAll(".nodeLine1")
+            .style("stroke-opacity" , 0.25);
+        svg.selectAll(".nodeLine2")
+            .style("stroke-opacity" , 0.25);
+
+    }
+}
+
+
+function mouseovered(d) {
+    if (force.alpha>0) return;
+    var list = new Object();
+    list[d.name] = new Object();
+
+    svg.selectAll(".linkArc")
+        .style("stroke-opacity" , function(l) {
+            if (l.source.name==d.name){
+                if (!list[l.target.name]){
+                    list[l.target.name] = new Object();
+                    list[l.target.name].count=1;
+                    list[l.target.name].year=l.m;
+                    list[l.target.name].linkcount=l.count;
+                }
+                else{
+                    list[l.target.name].count++;
+                    if (l.count>list[l.target.name].linkcount){
+                        list[l.target.name].linkcount = l.count;
+                        list[l.target.name].year=l.m;
+                    }
+                }
+                return 1;
+            }
+            else if (l.target.name==d.name){
+                if (!list[l.source.name]){
+                    list[l.source.name] = new Object();
+                    list[l.source.name].count=1;
+                    list[l.source.name].year=l.m;
+                    list[l.source.name].linkcount=l.count;
+                }
+                else{
+                    list[l.source.name].count++;
+                    if (l.count>list[l.source.name].linkcount){
+                        list[l.source.name].linkcount = l.count;
+                        list[l.source.name].year=l.m;
+                    }
+                }
+                return 1;
+            }
+            else
+                return 0.01;
+        });
+
+    svg.selectAll(".linePNodes")
+        .style("stroke-opacity" , 0.01);
+
+    svg.selectAll(".nodeLine")
+        .style("stroke-opacity" , 0.01);
+
+
+
+    nodeG.style("fill-opacity" , function(n) {
+        if (list[n.name])
+            return 1;
+        else
+            return 0.1;
+    })
+        .style("font-weight", function(n) { return d.name==n.name ? "bold" : ""; })
+    ;
+
+    nodeG.transition().duration(500).attr("transform", function(n) {
+        if (list[n.name] && n.name!=d.name){
+            var newX =xStep+xScale(list[n.name].year);
+            return "translate(" + newX + "," + n.y + ")"
+        }
+        else{
+            return "translate(" + n.xConnected + "," + n.y + ")"
+        }
+    })
+}
 
