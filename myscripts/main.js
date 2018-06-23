@@ -10,13 +10,8 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var svg2 = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", 0);
 
-var topTermMode = 0;
 
-//Set up the force layout
 //Set up the force layout
 var force = d3.layout.force()
     .charge(-10)
@@ -26,44 +21,6 @@ var force = d3.layout.force()
     .alpha(0.1)
     .size([width, height/3]);
 
-/*
- var force = cola.d3adaptor()
-    .linkDistance(30)
-    .size([width, height]);
-*/
-
-var force2 = d3.layout.force()
-    .charge(-80)
-    .linkDistance(80)
-    .gravity(0.08)
-    .alpha(0.12)
-    .size([width, height]);    
-
-var node_drag = d3.behavior.drag()
-        .on("dragstart", dragstart)
-        .on("drag", dragmove)
-        .on("dragend", dragend);
-
-    function dragstart(d, i) {
-        force.stop() // stops the force auto positioning before you start dragging
-    }
-
-    function dragmove(d, i) {
-        d.px += d3.event.dx;
-        d.py += d3.event.dy;
-        d.x += d3.event.dx;
-        d.y += d3.event.dy; 
-    }
-
-    function dragend(d, i) {
-        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-        force.resume();
-    }
-
-    function releasenode(d) {
-        d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-        //force.resume();
-    }
 
 
 var data, data2;
@@ -122,7 +79,7 @@ var areaSciVis = d3.svg.area()
         .x(function(d) { return xStep+xScale(d.yearId); })
         .y0(function(d) { return d.yNode-yScale(d.value)+2*yScale(d.InfoVis)+2*yScale(d.VAST); })
         .y1(function(d) {  return d.yNode -yScale(d.value)+2*yScale(d.InfoVis)+2*yScale(d.VAST)+2*yScale(d.SciVis); });
-     
+
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .style('top', "200px")
@@ -145,33 +102,21 @@ var listYear = [];
 
 
 function filterTimeFormat(time) {
-
     // Number of decimal places to round to
     var decimal_places = 2;
-
     // Maximum number of hours before we should assume minutes were intended. Set to 0 to remove the maximum.
     var maximum_hours = 15;
-
     // 3
     var int_format = time.match(/^\d+$/);
 
     // 1:15
     var time_format = time.match(/([\d]*):([\d]+)/);
 
-    // 10m
-    var minute_string_format = time.toLowerCase().match(/([\d]+)m/);
-
-    // 2h
-    var hour_string_format = time.toLowerCase().match(/([\d]+)h/);
-
     hours = parseInt(time_format[1]*60);
     minutes = parseFloat(time_format[2]);
     time = hours + minutes;
-   
-
     // make sure what ever we return is a 2 digit float
     time = parseFloat(time).toFixed(decimal_places);
-
     return time;
 }
 
@@ -188,8 +133,6 @@ d3.tsv("data/league.tsv", function(error, data_) {
         console.log("Time="+year);
     
         d.year = year;
-        //if (d.year<20) return; 
-            
         numberInputTerms++;
              
         var list = d["Teams"].split(" vs. ");
@@ -204,9 +147,6 @@ d3.tsv("data/league.tsv", function(error, data_) {
                 terms[term].max = 0;
                 terms[term].maxYear = -100;   // initialized negative
                 terms[term].category = d.Conference;
-                terms[term].InfoVis ={};
-                terms[term].VAST ={};
-                terms[term].SciVis ={};
             } 
             else
                 terms[term].count++; 
@@ -223,55 +163,14 @@ d3.tsv("data/league.tsv", function(error, data_) {
                     if (terms[term].max>termMaxMax)
                         termMaxMax = terms[term].max;
                 }    
-            }   
-
-            if (d.Conference=="InfoVis" || d.Conference=="Comedy"){
-                if (!terms[term].InfoVis[year]){
-                    terms[term].InfoVis[year] = 1;
-                }    
-                else{
-                    terms[term].InfoVis[year] ++;
-                }  
-            } 
-            else if (d.Conference=="VAST"|| d.Conference=="Action"){
-                if (!terms[term].VAST[year]){
-                    terms[term].VAST[year] = 1;
-                }    
-                else{
-                    terms[term].VAST[year] ++;
-                }  
-            }   
-            else if (d.Conference=="SciVis" || d.Conference=="Drama"){
-                if (!terms[term].SciVis[year]){
-                    terms[term].SciVis[year] = 1;
-                }    
-                else{
-                    terms[term].SciVis[year] ++;
-                }  
-            }   
+            }
         }        
     });
-    console.log("DONE reading the input file = "+data.length)
-      
 
-    
-     
-    console.log("DONE computing yearly sources")
-   
-
-    //readTermsAndRelationships("p__saddam hussein");
-    
     readTermsAndRelationships();
     computeNodes();
     computeLinks();
 
-    //Creates the graph data structure out of the json data
-    //   force.linkStrength(100);
-    
-    
-  
-    
-    
     /// The second force directed layout ***********
     for (var i=0;i<nodes.length;i++){
         var nod = nodes[i];
@@ -332,66 +231,9 @@ d3.tsv("data/league.tsv", function(error, data_) {
         }  
     }
 
-
     force.nodes(nodes)
         .links(links)
         .start(100,150,200);
-
-   // force2.nodes(nodes2)
-   //     .links(links2)
-   //     .start();    
-
-
-  var link2 = svg2.selectAll(".link2")
-      .data(links2)
-    .enter().append("line")
-      .attr("class", "link2")
-      .style("stroke",function(d) {
-        if (d.count==1){
-            return "#fbb";
-        }
-        else{
-            return "#f00";
-        }
-
-      })
-      .style("stroke-width", function(d) { return 0.5+0.75*linkScale(d.count); });
-
-  var node2 = svg2.selectAll(".nodeText2")
-    .data(nodes2)
-    .enter().append("text")
-        .attr("class", "nodeText2")  
-        .text(function(d) { return d.name })           
-        .attr("dy", ".35em")
-        .style("fill","#000")
-        .style("text-anchor","middle")
-        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
-        .style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "14px"); 
-
-
-
-
-
-node2.append("title")
-      .text(function(d) { return d.name; });
-
-  force2.on("tick", function() {
-    link2.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node2.attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; });
-  });
-
-
-
-
-
 
     force.on("tick", function () {
         update();
@@ -399,9 +241,6 @@ node2.append("title")
     force.on("end", function () {
         detactTimeSeries();
     });
-
-    
-    
 
     setupSliderScale(svg);
     drawColorLegend();
@@ -477,11 +316,7 @@ node2.append("title")
                }
             } );
         }
-
-
         var removeList = {};   // remove list **************
-
-         
 
         termArray = [];
         for (var att in terms) {
@@ -490,21 +325,6 @@ node2.append("title")
             if (removeList[e.term] || (searchTerm && searchTerm!="" && !selected[e.term])) // remove list **************
                 continue;
 
-            /*
-            var maxNet = 0;
-            var maxYear = -1;
-            for (var y=1; y<numYear;y++){
-                if (terms[att][y]){
-                    var previous = 0;
-                    if (terms[att][y-1])
-                        previous = terms[att][y-1];
-                    var net = (terms[att][y]+1)/(previous+1);
-                    if (net>maxNet){
-                        maxNet=net;
-                        maxYear = y;
-                    }    
-                }
-            }*/
             var maxmaxmax = 0
             for (var i=0;i<numYear;i++){
                 if (terms[att][i])
@@ -515,31 +335,20 @@ node2.append("title")
             e.max = maxmaxmax;////terms[att].max;
             e.maxYear = terms[att].maxYear;
             e.category = terms[att].category;   
-            e.infoVis = terms[att].InfoVis;   
-            e.VAST = terms[att].VAST;   
-            e.SciVis = terms[att].SciVis;   
 
-            
-            if (e.term==searchTerm){
+            if (e.term==searchTerm) {
                 e.isSearchTerm = 1;
             }
-              
             termArray.push(e);
         }
-//        console.log("  termArray.length="+termArray.length) ; 
-       
+
         if (!searchTerm)
             numberInputTerms = termArray.length;
         
-       console.log("Finish ordering term by maxNet") ; 
-        
-        
-       
     // Compute relationship **********************************************************
         numNode2 = termArray.length;
         relationship ={};
         relationshipMaxMax =0;
-       // rrr ={};
         ttt ={};
         data2.forEach(function(d) { 
             var year = d.year;
@@ -550,64 +359,57 @@ node2.append("title")
                     var term2 = list[j];
                     if (!relationship[term1+"__"+term2]){
                         relationship[term1+"__"+term2] = new Object();
-                     //   rrr[term1+"__"+term2] = new Object();
                         ttt[term1+"__"+term2] = new Object();
                         relationship[term1+"__"+term2].max = 1;
                         relationship[term1+"__"+term2].maxYear =year;
                     }    
                     if (!relationship[term1+"__"+term2][year]){
                         relationship[term1+"__"+term2][year] = 1;
-                  //      rrr[term1+"__"+term2][year] = {};
                         ttt[term1+"__"+term2][year] = [];
                         ttt[term1+"__"+term2][year].push(d["Location"]);
                     }    
                     else{
-                      //  if (!rrr[term1+"__"+term2][year][d["Conference"]+"**"+d["Title"].substring(0,10)]){
-                            relationship[term1+"__"+term2][year]++;
-                            ttt[term1+"__"+term2][year].push(d["Location"]);
-                        
-                            if (relationship[term1+"__"+term2][year]>relationship[term1+"__"+term2].max){
-                                relationship[term1+"__"+term2].max = relationship[term1+"__"+term2][year];
-                                relationship[term1+"__"+term2].maxYear =year; 
-                                
-                                if (relationship[term1+"__"+term2].max>relationshipMaxMax) // max over time
-                                    relationshipMaxMax = relationship[term1+"__"+term2].max;
-                            } 
-                    //    } 
+                        relationship[term1+"__"+term2][year]++;
+                        ttt[term1+"__"+term2][year].push(d["Location"]);
+
+                        if (relationship[term1+"__"+term2][year]>relationship[term1+"__"+term2].max){
+                            relationship[term1+"__"+term2].max = relationship[term1+"__"+term2][year];
+                            relationship[term1+"__"+term2].maxYear =year;
+
+                            if (relationship[term1+"__"+term2].max>relationshipMaxMax) // max over time
+                                relationshipMaxMax = relationship[term1+"__"+term2].max;
+                        }
                     }
 
                 }
             }
         });
-        console.log("DONE computing realtionships relationshipMaxMax="+relationshipMaxMax);
     }
-    
 
     function computeConnectivity(a, num) {
         for (var i=0; i<num;i++){
             a[i].isConnected=-100;
             a[i].isConnectedMaxYear= a[i].maxYear;
-        }    
-        
+        }
         for (var i=0; i<num;i++){
             var term1 =  a[i].term;
             for (var j=i+1; j<num;j++){
                 var term2 =  a[j].term;
-                if (relationship[term1+"__"+term2] && relationship[term1+"__"+term2].max>=valueSlider){
-                    if (relationship[term1+"__"+term2].max> a[i].isConnected 
+                if (relationship[term1+"__"+term2] && relationship[term1+"__"+term2].max>=1){
+                    if (relationship[term1+"__"+term2].max> a[i].isConnected
                         || (relationship[term1+"__"+term2].max == a[i].isConnected
                             && relationship[term1+"__"+term2].maxYear<a[i].isConnectedMaxYear)){
                         a[i].isConnected = relationship[term1+"__"+term2].max;
                         a[i].isConnectedMaxYear = relationship[term1+"__"+term2].maxYear;
-                    }    
+                    }
                     if (relationship[term1+"__"+term2].max> a[j].isConnected
                         || (relationship[term1+"__"+term2].max == a[j].isConnected
                             && relationship[term1+"__"+term2].maxYear<a[j].isConnectedMaxYear)){
                         a[j].isConnected = relationship[term1+"__"+term2].max;
                         a[j].isConnectedMaxYear = relationship[term1+"__"+term2].maxYear;
-                    }   
+                    }
                 }
-                else if (relationship[term2+"__"+term1] && relationship[term2+"__"+term1].max>=valueSlider){
+                else if (relationship[term2+"__"+term1] && relationship[term2+"__"+term1].max>=1){
                     if (relationship[term2+"__"+term1].max>a[i].isConnected
                         || (relationship[term2+"__"+term1].max == a[i].isConnected
                             && relationship[term2+"__"+term1].maxYear<a[i].isConnectedMaxYear)){
@@ -619,7 +421,7 @@ node2.append("title")
                             && relationship[term2+"__"+term1].maxYear<a[j].isConnectedMaxYear)){
                         a[j].isConnected = relationship[term2+"__"+term1].max;
                         a[j].isConnectedMaxYear = relationship[term1+"__"+term2].maxYear;
-                    }    
+                    }
                 }
             }
         }
@@ -693,9 +495,6 @@ node2.append("title")
                 
             for (var y=0; y<numYear; y++){
                 nodes[i].yearly[y] = new Object();
-                nodes[i].InfoVis[y] = new Object();
-                nodes[i].VAST[y] = new Object();
-                nodes[i].SciVis[y] = new Object();
                 if (terms[nodes[i].name][y]){
                     nodes[i].yearly[y].value = terms[nodes[i].name][y];
                     if (nodes[i].yearly[y].value >termMaxMax2)
@@ -704,37 +503,11 @@ node2.append("title")
                 else{
                     nodes[i].yearly[y].value = 0;
                 }    
-                if (terms[nodes[i].name].InfoVis[y]){
-                    nodes[i].InfoVis[y].value = terms[nodes[i].name].InfoVis[y];
-                }
-                else{
-                    nodes[i].InfoVis[y].value = 0;
-                }
-                if (terms[nodes[i].name].VAST[y]){
-                    nodes[i].VAST[y].value = terms[nodes[i].name].VAST[y];
-                }
-                else{
-                    nodes[i].VAST[y].value = 0;
-                }
-                if (terms[nodes[i].name].SciVis[y]){
-                    nodes[i].SciVis[y].value = terms[nodes[i].name].SciVis[y];
-                }
-                else{
-                    nodes[i].SciVis[y].value = 0;
-                }
+
 
                 nodes[i].yearly[y].yearId = y;
                 nodes[i].yearly[y].yNode = nodes[i].y;
-                nodes[i].yearly[y].InfoVis = nodes[i].InfoVis[y].value;
-                nodes[i].yearly[y].VAST = nodes[i].VAST[y].value;
-                nodes[i].yearly[y].SciVis = nodes[i].SciVis[y].value;
                 
-                nodes[i].InfoVis[y].yearId = y;
-                nodes[i].InfoVis[y].yNode = nodes[i].y;
-                nodes[i].VAST[y].yearId = y;
-                nodes[i].VAST[y].yNode = nodes[i].y;
-                nodes[i].SciVis[y].yearId = y;
-                nodes[i].SciVis[y].yNode = nodes[i].y;
             }
         } 
         
@@ -838,7 +611,6 @@ node2.append("title")
             .domain([0, 500]);
         var hhh = Math.min(linearScale(numNode)*height/numNode,10);
         
-        console.log("hhh="+hhh+" linearScale="+linearScale(numNode)+"    termMaxMax2="+termMaxMax2);
         yScale = d3.scale.linear()
             .range([0, hhh/200])
             .domain([0, termMaxMax2]);
@@ -864,12 +636,8 @@ node2.append("title")
         .enter().append("path")
         .attr("class", "linkArc")
         .style("stroke", function (d) {
-            if (d.count==1){
-               return getColor(d.type[0]);;     
-            }
-            else{
+
                 return "#000";
-            }
         })
         .style("stroke-opacity", 1)
         .style("stroke-width", function (d) {
@@ -1017,12 +785,8 @@ $('#btnUpload').click(function() {
 });
 
 function searchNode() {
-
     svg.selectAll(".linePNodes").remove();
-        
     searchTerm = document.getElementById('search').value;
-    console.log("searchTerm="+searchTerm);
-    valueSlider =1;
     handle.attr("cx", xScaleSlider(valueSlider));
     recompute();
 }
@@ -1265,83 +1029,11 @@ function mouseovered(d) {
                 return "translate(" + n.xConnected + "," + n.y + ")"
             }
         })
-}    
-
-
-
-
-function mouseouted(d) {
-    if (force.alpha()==0) {
-        nodeG.style("fill-opacity" , 1);
-        svg.selectAll(".layerInfoVis")
-            .style("fill-opacity" ,1);
-        svg.selectAll(".layerVAST")
-            .style("fill-opacity" ,1);
-        svg.selectAll(".layerSciVis")
-            .style("fill-opacity" ,1);
-        svg.selectAll(".linkArc")
-            .style("stroke-opacity" , 1);    
-        svg.selectAll(".linePNodes")
-            .style("stroke-opacity" , 1);    
-        svg.selectAll(".nodeLine")
-            .style("stroke-opacity" , 1);    
-        svg.selectAll(".nodeLine1")
-            .style("stroke-opacity" , 0.25);    
-        svg.selectAll(".nodeLine2")
-            .style("stroke-opacity" , 0.25);    
-                
-
-        nodeG.style("font-weight", "")  ;
-        nodeG.transition().duration(500).attr("transform", function(n) {
-            return "translate(" +n.xConnected + "," + n.y + ")"
-            
-        })   
-    }      
-}
-
-    // check if a node for a month m already exist.
-    function isContainedChild(a, m) {
-        if (a){
-            for (var i=0; i<a.length;i++){
-                var index = a[i];
-                if (nodes[index].year==m)
-                    return i;
-            }
-        }
-        return -1;
     }
-
-     // check if a node for a month m already exist.
-    function isContainedInteger(a, m) {
-        if (a){
-            for (var i=0; i<a.length;i++){
-                if (a[i]==m)
-                    return i;
-            }
-        }
-        return -1;
-    }
-
-    function linkArc(d) {
-        var dx = d.target.x - d.source.x,
-            dy = d.target.y - d.source.y,
-            dr = Math.sqrt(dx * dx + dy * dy)/2;
-        // return "M" + (xStep+d.source.x) + "," + d.source.y + " Q" + ((xStep+d.source.x)+dr) + "," + d.target.y+ " " + (xStep+d.target.x) + "," + d.target.y;
-     
-        if (d.source.y<d.target.y )
-            return "M" + (xStep+d.source.x) + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.target.x) + "," + d.target.y;
-        else
-            return "M" + (xStep+d.target.x) + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.source.x) + "," + d.source.y;
-    }
-
-
 
     function update(){
         nodes.forEach(function(d) {
-            //if (searchTerm!="")
-            //    d.x += (width/2-d.x)*0.02;
-            //else
-                d.x += (width/2-d.x)*0.01;
+            d.x += (width/2-d.x)*0.01;
                      
             if  (d.parentNode>=0){
                 d.y += (nodes[d.parentNode].y- d.y)*0.2;
@@ -1358,40 +1050,17 @@ function mouseouted(d) {
                 }
             }
         });    
-        //if (document.getElementById("checkbox1").checked){
-             linkArcs.style("stroke-width", 0);
-            
-            // nodeG.transition().duration(500).attr("transform", function(d) {
-            //    return "translate(" + 200 + "," + d.y + ")"
-           // })
-           // svg.selectAll(".nodeText").style("text-anchor","start")
-           
-           
-            yScale = d3.scale.linear()
-            .range([0, 2])
-            .domain([0, termMaxMax2]);
-            nodeG.attr("transform", function(d) {
-                return "translate(" + (xStep+d.x) + "," + d.y + ")"
-            })
-            linkArcs.style("stroke-width", function (d) {
-                return d.value;
-            });
-        /*}
-        else{
-        
-            yScale = d3.scale.linear()
-            .range([0, 0])
-            .domain([0, termMaxMax2]);
-        
+        linkArcs.style("stroke-width", 0);
 
-            nodeG.attr("transform", function(d) {
-                return "translate(" + (xStep+d.x) + "," + d.y + ")"
-            })
-            linkArcs.style("stroke-width", function (d) {
-                return d.value;
-            });
-         }   */ 
-         
+        yScale = d3.scale.linear()
+        .range([0, 2])
+        .domain([0, termMaxMax2]);
+        nodeG.attr("transform", function(d) {
+            return "translate(" + (xStep+d.x) + "," + d.y + ")"
+        })
+        linkArcs.style("stroke-width", function (d) {
+            return d.value;
+        });
         linkArcs.attr("d", linkArc);
       //  if (force.alpha()<0.02)
       //     force.stop();

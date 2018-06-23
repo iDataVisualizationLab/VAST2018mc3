@@ -109,117 +109,92 @@ function getColor(category) {
   }
 }
 
-function colorFaded(d) {
-  var minSat = 80;
-  var maxSat = 200;
-  var step = (maxSat-minSat)/maxDepth;
-  var sat = Math.round(maxSat-d.depth*step);
- 
-  //console.log("maxDepth = "+maxDepth+"  sat="+sat+" d.depth = "+d.depth+" step="+step);
-  return d._children ? "rgb("+sat+", "+sat+", "+sat+")"  // collapsed package
-    : d.children ? "rgb("+sat+", "+sat+", "+sat+")" // expanded package
-    : "#aaaacc"; // leaf node
+
+var node_drag = d3.behavior.drag()
+    .on("dragstart", dragstart)
+    .on("drag", dragmove)
+    .on("dragend", dragend);
+
+function dragstart(d, i) {
+    force.stop() // stops the force auto positioning before you start dragging
 }
 
-
-function getBranchingAngle1(radius3, numChild) {
-  if (numChild<=2){
-    return Math.pow(radius3,2);
-  }  
-  else
-    return Math.pow(radius3,1);
- } 
-
-function getRadius(d) {
- // console.log("scaleCircle = "+scaleCircle +" scaleRadius="+scaleRadius);
-return d._children ? scaleCircle*Math.pow(d.childCount1, scaleRadius)// collapsed package
-      : d.children ? scaleCircle*Math.pow(d.childCount1, scaleRadius) // expanded package
-      : scaleCircle;
-     // : 1; // leaf node
+function dragmove(d, i) {
+    d.px += d3.event.dx;
+    d.py += d3.event.dy;
+    d.x += d3.event.dx;
+    d.y += d3.event.dy;
 }
 
-
-function childCount1(level, n) {
-    count = 0;
-    if(n.children && n.children.length > 0) {
-      count += n.children.length;
-      n.children.forEach(function(d) {
-        count += childCount1(level + 1, d);
-      });
-      n.childCount1 = count;
-    }
-    else{
-       n.childCount1 = 0;
-    }
-    return count;
-};
-
-function childCount2(level, n) {
-    var arr = [];
-    if(n.children && n.children.length > 0) {
-      n.children.forEach(function(d) {
-        arr.push(d);
-      });
-    }
-    arr.sort(function(a,b) { return parseFloat(a.childCount1) - parseFloat(b.childCount1) } );
-    var arr2 = [];
-    arr.forEach(function(d, i) {
-        d.order1 = i;
-        arr2.splice(arr2.length/2,0, d);
-    });
-    arr2.forEach(function(d, i) {
-        d.order2 = i;
-        childCount2(level + 1, d);
-        d.idDFS = nodeDFSCount++;   // this set DFS id for nodes
-    });
-
-};
-
-d3.select(self.frameElement).style("height", diameter + "px");
-
-
-
-
-// Toggle children on click.
-function click(d) {
-/*  if (d3.event.defaultPrevented) return; // ignore drag
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  console.log("Clicking on = "+d.name+ " d.depth = "+d.depth);
-  
- update();*/
+function dragend(d, i) {
+    d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+    force.resume();
 }
 
-/*
-function collide(alpha) {
-  var quadtree = d3.geom.quadtree(tree_nodes);
-  return function(d) {
-    quadtree.visit(function(quad, x1, y1, x2, y2) {
-    if (quad.point && (quad.point !== d) && (quad.point !== d.parent) && (quad.point.parent !== d)) {
-         var rb = getRadius(d) + getRadius(quad.point),
-        nx1 = d.x - rb,
-        nx2 = d.x + rb,
-        ny1 = d.y - rb,
-        ny2 = d.y + rb;
+function releasenode(d) {
+    d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+    //force.resume();
+}
 
-        var x = d.x - quad.point.x,
-            y = d.y - quad.point.y,
-            l = Math.sqrt(x * x + y * y);
-          if (l < rb) {
-          l = (l - rb) / l * alpha;
-          d.x -= x *= l;
-          d.y -= y *= l;
-          quad.point.x += x;
-          quad.point.y += y;
+function mouseouted(d) {
+    if (force.alpha()==0) {
+        nodeG.style("fill-opacity" , 1);
+        svg.selectAll(".layerInfoVis")
+            .style("fill-opacity" ,1);
+        svg.selectAll(".layerVAST")
+            .style("fill-opacity" ,1);
+        svg.selectAll(".layerSciVis")
+            .style("fill-opacity" ,1);
+        svg.selectAll(".linkArc")
+            .style("stroke-opacity" , 1);
+        svg.selectAll(".linePNodes")
+            .style("stroke-opacity" , 1);
+        svg.selectAll(".nodeLine")
+            .style("stroke-opacity" , 1);
+        svg.selectAll(".nodeLine1")
+            .style("stroke-opacity" , 0.25);
+        svg.selectAll(".nodeLine2")
+            .style("stroke-opacity" , 0.25);
+
+        nodeG.style("font-weight", "")  ;
+        nodeG.transition().duration(500).attr("transform", function(n) {
+            return "translate(" +n.xConnected + "," + n.y + ")"
+
+        })
+    }
+}
+
+// check if a node for a month m already exist.
+function isContainedChild(a, m) {
+    if (a){
+        for (var i=0; i<a.length;i++){
+            var index = a[i];
+            if (nodes[index].year==m)
+                return i;
         }
-      }
-      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-    });
-  };
+    }
+    return -1;
 }
-*/
+
+// check if a node for a month m already exist.
+function isContainedInteger(a, m) {
+    if (a){
+        for (var i=0; i<a.length;i++){
+            if (a[i]==m)
+                return i;
+        }
+    }
+    return -1;
+}
+
+function linkArc(d) {
+    var dx = d.target.x - d.source.x,
+        dy = d.target.y - d.source.y,
+        dr = Math.sqrt(dx * dx + dy * dy)/2;
+    if (d.source.y<d.target.y )
+        return "M" + (xStep+d.source.x) + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.target.x) + "," + d.target.y;
+    else
+        return "M" + (xStep+d.target.x) + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + (xStep+d.source.x) + "," + d.source.y;
+}
+
+
