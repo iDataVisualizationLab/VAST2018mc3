@@ -1,0 +1,243 @@
+:root{
+    --page-width: 980px;
+    --default-margin: 20px;
+    --box-width: 460px;
+    --box-height: var(--box-width);
+
+    --corcoef-graph-margin-left: var(--default-margin);
+    --corcoef-graph-margin-top: var(--default-margin);
+
+    --option1-width: 150px;
+
+    --option2-width: var(--option1-width);
+
+    --msdropdown-height: 28px;/*28px is the default height of the msdropdown*/
+
+    --scatter-plot-margin-left: calc(var(--default-margin) + var(--box-width) + var(--default-margin));
+    --scatter-plot-margin-top: var(--corcoef-graph-margin-top);
+
+    --contour1-margin-left: var(--default-margin);
+    --contour1-margin-top: calc(var(--corcoef-graph-margin-top) + var(--box-width) + var(--default-margin));
+
+    --contour2-margin-left: var(--scatter-plot-margin-left);
+    --contour2-margin-top: var(--contour1-margin-top);
+}
+/*<editor-fold desc="Section for the loader">*/
+ .loader {
+     border: 16px solid #f3f3f3;
+     border-radius: 50%;
+     border-top: 16px solid #3498db;
+     width: 120px;
+     height: 120px;
+     -webkit-animation: spin 2s linear infinite; /* Safari */
+     animation: spin 2s linear infinite;
+     margin: 0 auto;
+     display: none;
+ }
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/*</editor-fold>*/
+
+#page{
+    position: relative;
+    width: var(--page-width);
+    margin: 0 auto;
+    overflow: cover;
+}
+#profileDiv{
+    position: relative;
+    width: var(--page-width);
+    margin: 0 auto;
+    overflow: cover;
+}
+.roundedBorder{
+    border: 1px solid rgba(0,0,0, 1);
+    background-color: rgba(255,255,255, 1);
+    border-radius: 10px;
+    box-shadow: 4px 4px 4px #444;
+}
+
+#controlPanel{
+  position:absolute;
+  background-color: rgba(200,200,200, 0.95);
+  left:10;
+  top:10;
+}
+
+#button1{
+  position:absolute;
+  left:14px;
+  top:5px;
+  order: 1px solid rgba(0,0,0, 1);
+  background-color: rgba(255,255,255, 1);
+  border-radius: 1px;
+  box-shadow: 1px 1px 1px #444;
+}
+
+
+#option1Container{
+    width: var(--option1-width);
+    margin: 0 auto;
+}
+#option2Container{
+    width: var(--option2-width);
+    margin: 0 auto;
+}
+
+#corcoefGraphDiv{
+    position: absolute;
+    float: left;
+    margin-left: var(--corcoef-graph-margin-left);
+    margin-top: var(--corcoef-graph-margin-top);
+}
+#corcoefGraph{
+    width: var(--box-width);
+    height: calc(var(--box-width) - 3*var(--default-margin));;
+}
+#corcoefGraphTitle{
+    text-align: center;
+    margin-top: var(--default-margin);
+}
+.elementText{
+    font-family: sans-serif;
+    text-anchor: middle;
+    font-size: 8px;
+    alignment-baseline: hanging;
+}
+
+#scatterPlot{
+    position: absolute;
+    margin-left: var(--scatter-plot-margin-left);
+    margin-top: var(--scatter-plot-margin-top);
+}
+
+#contour1Div{
+    position: absolute;
+    margin-left: var(--contour1-margin-left);
+    margin-top: var(--contour1-margin-top);
+}
+#contour2Div{
+    position: absolute;
+    margin-left: var(--contour2-margin-left);
+    margin-top: var(--contour2-margin-top);
+}
+#contour1{
+    width: var(--box-width);
+    height: calc(var(--box-width) - 2*var(--default-margin))
+}
+#contour2{
+    width: var(--box-width);
+    height: calc(var(--box-width) - 2*var(--default-margin))
+}
+
+svg image:hover{
+    cursor: pointer;
+}
+
+#profileContainerDiv{
+    margin-top: var(--default-margin);
+    margin-left: var(--default-margin);
+    width: 200px;
+}
+
+.myclip{
+    clip-path: circle(15px at center);
+    -webkit-clip-path: circle(15px at center);
+    -moz-clip-path: circle(15px at center)
+}
+
+.nodeText {
+  background: #91877b;
+  text-shadow: 0 11px 10 rgba(255, 255, 255, 1);
+}
+
+.node {
+  stroke: #fff;
+  stroke-width: 1px;
+  stroke-opacity: 0.6;
+}
+.link {
+  stroke: #555;
+  stroke-opacity: .9;
+}
+.linkArc {
+  fill: none;
+  stroke: #000;
+}
+
+.node text {
+  font: 9px helvetica;
+}
+
+<!-- For the slider -->
+.axis {
+  font: 5 sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+
+.axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .25;
+  stroke-width: 5px;
+  stroke-linecap: round;
+}
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 3px;
+  stroke-linecap: round;
+}
+
+.slider .handle {
+  fill: #666;
+  stroke: #000;
+  stroke-opacity: .25;
+  stroke-width: 1px;
+  cursor: crosshair;
+}
+
+
+h3 {
+  color: #1ABC9C;
+  text-align:center;
+  font-style: italic;
+  font-size: 14px;
+  font-family: "Helvetica";
+}
+
+/* tooltip */
+.d3-tip {
+  line-height: 1;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 8px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
