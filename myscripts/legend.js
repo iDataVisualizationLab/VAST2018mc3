@@ -11,6 +11,10 @@ var transCounts = [0, 0, 0, 0];
 
 var clickCount1 =0;
 
+var clickRelatedCount1 =0;
+
+var colorSuspicious = "#a00";
+
 function colores_google(n) {
     var colores_g = ["#3060aa", "#660099", "#109618", "#996600", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     return colores_g[n % colores_g.length];
@@ -35,17 +39,42 @@ function drawLegends(){
         .attr("class","textLegend1")
         .attr("x", 30 )
         .attr("y", legendTop1+20)
-        .attr("fill", "#a00" )
+        .attr("fill", colorSuspicious )
         .text("Suspicious");
+    svgLegend.append("circle")
+        .attr("class","circleLegend1")
+        .attr("r", 6 )
+        .attr("cx", 16 )
+        .attr("cy", legendTop1+15)
+        .attr("fill", colorSuspicious )
+        .attr("stroke", "#fff" )
+        .attr("stroke-width", 1);
     svgLegend.append("text")
         .attr("class","textLegend1")
         .attr("x", 30 )
         .attr("y", legendTop1+40)
         .attr("fill", "#444" )
-        .text("Related");
+        .text("Related")
+        .on("click", removeRelated);
+    svgLegend.append("circle")
+        .attr("class","circleLegend1")
+        .attr("r", 4 )
+        .attr("cx", 16 )
+        .attr("cy", legendTop1+35)
+        .attr("fill", "#333" )
+        .attr("stroke", "#fff" )
+        .attr("stroke-width", 1)
+        .on("click", removeRelated);
 
-
-
+    function removeRelated(){
+        if (clickRelatedCount1%2==0){
+            restart(nodeSuspicious,linkSuspicious);
+        }
+        else {
+            restart(nodes, links);
+        }
+        clickRelatedCount1++;
+    }
 
 
     var legendTop2 = 150;
@@ -99,6 +128,22 @@ function drawLegends(){
         .attr("fill", function(d,i) { return colores_google(i); } )
         .text(function(d,i) {
           return transactions[i] +" ("+transCounts[i]+")";});
+}
+
+function restart(nodes2,links2) {
+
+    // Apply the general update pattern to the links.
+    addLinks(links2);
+
+
+    // Apply the general update pattern to the nodes.
+    addNodes(nodes2)
+
+
+    // Update and restart the simulation.
+    force.nodes(nodes2);
+    force.links(links2);
+    force.resume();
 
 
 }
