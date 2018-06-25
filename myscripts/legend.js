@@ -6,18 +6,19 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var transactions = ["Call", "Email", "Meeting", "Purchase"];
+var transactions = ["Call", "Email", "Purchase", "Meeting"];
 var transCounts = [0, 0, 0, 0];
 
 var clickCount1 =0;
 
 var clickRelatedCount1 =0;
+var clickCategoryCounts =[0,0,0,0];
 
 var colorSuspicious = "#a00";
 var durationTime =2000;
 
 function colores_google(n) {
-    var colores_g = ["#3060aa", "#660099", "#109618", "#996600", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+    var colores_g = ["#3060aa", "#660099", "#996600", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     return colores_g[n % colores_g.length];
 }
 
@@ -68,9 +69,13 @@ function drawLegends(){
 
     function removeRelated(){
         if (clickRelatedCount1%2==0){
+            nodeCurrent = nodeSuspicious;
+            linkCurrent = linkSuspicious;
             restart(nodeSuspicious,linkSuspicious);
         }
         else {
+            nodeCurrent = nodes;
+            linkCurrent = links;
             restart(nodes, links);
         }
         clickRelatedCount1++;
@@ -104,10 +109,10 @@ function drawLegends(){
         else if (links[j].category =="1"){
             transCounts[1]++;
         }
-        else if (links[j].category =="3"){  // Meetings
+        else if (links[j].category =="2"){  // Meetings
             transCounts[2]++;
         }
-        else if (links[j].category =="2"){  // Purchases
+        else if (links[j].category =="3"){  // Purchases
             transCounts[3]++;
         }
         else{
@@ -124,8 +129,28 @@ function drawLegends(){
         .attr("y", scale )
         .attr("dy", 5 )
         .attr("fill", function(d,i) { return colores_google(i); } )
+        .on("click", function(d,i) { removeCategory(i) ;})
         .text(function(d,i) {
           return transactions[i] +" ("+transCounts[i]+")";});
+
+
+    function removeCategory(cat){
+        clickCategoryCounts[cat]++;
+
+        // Compute Suspicious nodes
+        linkCurrent = [];
+
+        for (var i=0; i< links.length;i++) {
+            var linkCategory  = +links[i].category;
+            if (clickCategoryCounts[linkCategory] % 2 == 0) {
+                linkCurrent.push(links[i]);
+            }
+        }
+        nodeCurrent = nodes;
+        restart(nodeCurrent, linkCurrent);
+
+
+    }
 }
 
 function restart(nodes2,links2) {
@@ -165,7 +190,7 @@ function orderNodesTimeline(){
         return 0;
     });*/
 
-    var step = 20;//10*height/nodes.length;
+    var step = 10;//10*height/nodes.length;
     for (var i=0; i< nodes.length; i++) {
         nodes[i].y = i*step;
     }

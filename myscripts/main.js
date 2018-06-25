@@ -31,6 +31,7 @@ var data;
 var node,linkArcs;
 var nodes =[], links =[];
 var nodeSuspicious =[], linkSuspicious =[];
+var nodeCurrent =[], linkCurrent =[];
 var nodeRelated =[], linkelated =[];
 
 var terms = new Object();
@@ -140,7 +141,6 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             links.push(l);
         });
 
-
         // Compute Suspicious nodes
         for (var i=0; i< nodes.length;i++){
             if (suspicious[nodes[i].id])
@@ -157,8 +157,8 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
                 linkelated.push(links[i]);
                 links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
             }
-
         }
+
         // Order nodes and links
         nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
         links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
