@@ -63,6 +63,7 @@ function drawColorLegend() {
 function removeColorLegend() {
  svg.selectAll(".nodeLegend").remove();
 }
+
 function drawTimeLegend() {
   for (var i=minYear; i<maxYear;i=i+60){
     var xx = xStep+xScale((i-minYear));
@@ -143,12 +144,11 @@ function dragend(d, i) {
 
 function releasenode(d) {
     d.fixed = false; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-    //force.resume();
 }
 
 function mouseouted(d) {
     if (force.alpha()==0) {
-        nodeG.style("fill-opacity" , 1);
+        node.style("fill-opacity" , 1);
         svg.selectAll(".layerInfoVis")
             .style("fill-opacity" ,1);
         svg.selectAll(".layerVAST")
@@ -166,8 +166,8 @@ function mouseouted(d) {
         svg.selectAll(".nodeLine2")
             .style("stroke-opacity" , 0.25);
 
-        nodeG.style("font-weight", "")  ;
-        nodeG.transition().duration(500).attr("transform", function(n) {
+        node.style("font-weight", "")  ;
+        node.transition().duration(500).attr("transform", function(n) {
             return "translate(" +n.xConnected + "," + n.y + ")"
 
         })
@@ -208,8 +208,6 @@ function searchNode() {
 
 function mouseoveredLink(l) {
     if (force.alpha()==0) {
-        // mouseovered(l.source);
-
         var term1 = l.source.name;
         var term2 = l.target.name;
         var list = {};
@@ -243,7 +241,6 @@ function mouseoveredLink(l) {
                 }
             }
         });
-
         var x1 = l.source.x;
         var x2 = l.target.x;
         var y1 = l.source.y;
@@ -285,7 +282,7 @@ function mouseoveredLink(l) {
         svg.selectAll(".linePNodes")
             .style("stroke-opacity", 0.1);
 
-        nodeG.style("fill-opacity" , function(n) {
+        node.style("fill-opacity" , function(n) {
             if (n.name== term1 || n.name== term2)
                 return 1;
             else
@@ -314,7 +311,7 @@ function mouseoveredLink(l) {
                 return 0.05;
         });
 
-        nodeG.transition().duration(500).attr("transform", function(n) {
+        node.transition().duration(500).attr("transform", function(n) {
             if (n.name== term1 || n.name== term2){
                 var newX =xStep+xScale(l.m);
                 return "translate(" + newX + "," + n.y + ")"
@@ -325,13 +322,14 @@ function mouseoveredLink(l) {
         })
     }
 }
+
 function mouseoutedLink(l) {
     if (force.alpha()==0) {
         svg.selectAll(".linkTilte").remove();
         svg.selectAll(".linkArc")
             .style("stroke-opacity" , 1);
-        nodeG.style("fill-opacity" , 1);
-        nodeG.transition().duration(500).attr("transform", function(n) {
+        node.style("fill-opacity" , 1);
+        node.transition().duration(500).attr("transform", function(n) {
             return "translate(" +n.xConnected + "," + n.y + ")"
         })
         svg.selectAll(".linePNodes")
@@ -396,18 +394,15 @@ function mouseovered(d) {
     svg.selectAll(".nodeLine")
         .style("stroke-opacity" , 0.01);
 
+    node.style("fill-opacity" , function(n) {
+            if (list[n.name])
+                return 1;
+            else
+                return 0.1;
+        })
+        .style("font-weight", function(n) { return d.name==n.name ? "bold" : ""; });
 
-
-    nodeG.style("fill-opacity" , function(n) {
-        if (list[n.name])
-            return 1;
-        else
-            return 0.1;
-    })
-        .style("font-weight", function(n) { return d.name==n.name ? "bold" : ""; })
-    ;
-
-    nodeG.transition().duration(500).attr("transform", function(n) {
+    node.transition().duration(500).attr("transform", function(n) {
         if (list[n.name] && n.name!=d.name){
             var newX =xStep+xScale(list[n.name].year);
             return "translate(" + newX + "," + n.y + ")"
@@ -417,4 +412,3 @@ function mouseovered(d) {
         }
     })
 }
-

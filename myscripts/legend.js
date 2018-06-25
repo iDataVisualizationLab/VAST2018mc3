@@ -14,6 +14,7 @@ var clickCount1 =0;
 var clickRelatedCount1 =0;
 
 var colorSuspicious = "#a00";
+var durationTime =2000;
 
 function colores_google(n) {
     var colores_g = ["#3060aa", "#660099", "#109618", "#996600", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
@@ -21,7 +22,6 @@ function colores_google(n) {
 }
 
 function drawLegends(){
-
     var svgLegend = d3.select("#controlPanel")
         .append("svg")
         .attr("width", 200)
@@ -76,10 +76,8 @@ function drawLegends(){
         clickRelatedCount1++;
     }
 
-
     var legendTop2 = 150;
     var scale = d3.scale.linear().domain([-1, 10]).range([legendTop2, legendTop2+180]);
-
     svgLegend.append("text")
         .attr("class","textTitle2")
         .attr("x", 8 )
@@ -131,32 +129,61 @@ function drawLegends(){
 }
 
 function restart(nodes2,links2) {
-
     // Apply the general update pattern to the links.
     addLinks(links2);
-
-
     // Apply the general update pattern to the nodes.
     addNodes(nodes2)
-
 
     // Update and restart the simulation.
     force.nodes(nodes2);
     force.links(links2);
     force.resume();
-
-
 }
 
 function buttonClick1(){
     if (clickCount1%2==0){  // Show timeline *********
-        detactTimeSeries();
+        //detactTimeSeries();
+        orderNodesTimeline();
     }
     else{
-
+        force.resume();
     }
     clickCount1++;
 }
+
+function orderNodesTimeline(){
+    // Stop force layout first
+    force.stop();
+
+   /* nodes.sort(function (a, b) {
+        if (a.y > b.y) {
+            return 1;
+        }
+        if (a.y < b.y) {
+            return -1;
+        }
+        return 0;
+    });*/
+
+    var step = 20;//10*height/nodes.length;
+    for (var i=0; i< nodes.length; i++) {
+        nodes[i].y = i*step;
+    }
+
+    nodes.forEach(function(d) {
+        d.x=xScale(d.listTimes[0]);
+    });
+
+    node.transition().duration(durationTime)
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; });
+    linkArcs.transition().duration(durationTime).attr("d", linkArc2);
+}
+
+
+
+
+
 
 function detactTimeSeries(){
     // Stop force layout first
@@ -193,7 +220,7 @@ function updateTransition(durationTime, timeY){  // timeY is the position of tim
         d.x=xScale(d.listTimes[0]);
     });
 
-    nodeG.transition().duration(durationTime)
+    node.transition().duration(durationTime)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
   /*

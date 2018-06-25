@@ -8,7 +8,7 @@
 
 
 //Constants for the SVG
-var margin = {top: 0, right: 0, bottom: 5, left: 15};
+var margin = {top: 0, right: 0, bottom: 0, left: 0};
 var width = document.body.clientWidth - margin.left - margin.right;
 var height = 1300;
 
@@ -20,7 +20,7 @@ var svg = d3.select("body").append("svg")
 //Set up the force layout
 var force = d3.layout.force()
     .charge(-25)
-    .linkDistance(100)
+    //.linkDistance(100)
     .gravity(0.1)
     //.friction(0.5)
    // .linkStrength(0.3)
@@ -35,7 +35,7 @@ var nodeRelated =[], linkelated =[];
 
 var terms = new Object();
 
-var xStep = 20;
+var xStep = 200;
 var xScale = d3.scale.linear().range([xStep, (width-xStep)]);
 var yScale;
 var searchTerm ="";
@@ -139,16 +139,45 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             l.category = d["X2"];
             links.push(l);
         });
+
+
+        // Compute Suspicious nodes
+        for (var i=0; i< nodes.length;i++){
+            if (suspicious[nodes[i].id])
+                nodeSuspicious.push(nodes[i]);
+            else
+                nodeRelated.push(nodes[i]);
+        }
+        for (var i=0; i< links.length;i++){
+            if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
+                linkSuspicious.push(links[i]);
+                links[i].betweenSuspicious = true;  // Add new property to indicate links between suspicious
+            }
+            else{
+                linkelated.push(links[i]);
+                links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
+            }
+
+        }
+        // Order nodes and links
+        nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
+        links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
+
+
+
+        updateLinkDistant();
+
+
+
+
         xScale.domain([0, maxT]); // Set time domain
 
-
-        /*force.linkDistance(function (l) {
-            return 5 + l.time / 30;
-        });*/
 
         force.nodes(nodes)
             .links(links)
             .start(100, 150, 200);
+
+
 
         // Add links **************************************************
         svg.selectAll(".linkArc").remove();
@@ -169,19 +198,6 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
         // Other functions *********************************************
         drawLegends();
 
-        // Compute Suspicious nodes
-        for (var i=0; i< nodes.length;i++){
-            if (suspicious[nodes[i].id])
-                nodeSuspicious.push(nodes[i]);
-            else
-                nodeRelated.push(nodes[i]);
-        }
-        for (var i=0; i< links.length;i++){
-            if (suspicious[links[i].source.id] && suspicious[links[i].target.id])
-                linkSuspicious.push(links[i]);
-            else
-                linkelated.push(links[i]);
-        }
 
         /*for (var i = 0; i < termArray.length; i++) {
          optArray.push(termArray[i].term);
@@ -194,6 +210,17 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
          }); */
     });
 });
+
+function updateLinkDistant() {
+    force.linkDistance(function (l,i) {
+        if (l.betweenSuspicious==true) {
+            return 200;
+        }
+        else{
+            return 50;
+        }
+    });
+}
 
 
 function addLinks(links1) {
@@ -318,6 +345,8 @@ function tick(){
     });*/
 
 //    console.log(force.alpha());
+    nodes[0].x = width/2;
+    nodes[0].y = height/2;
 
     node.attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
