@@ -34,10 +34,12 @@ var nodeSuspicious =[], linkSuspicious =[];
 var nodeCurrent =[], linkCurrent =[];
 var nodeRelated =[], linkelated =[];
 
+var nodeHighDegree =[]; // Nodes with degree >=2 to draw timeline
+
 var terms = new Object();
 
 var xStep = 200;
-var xScale = d3.scale.linear().range([xStep, (width-xStep)]);
+var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var yScale;
 var searchTerm ="";
 var optArray = [];   // FOR search box
@@ -156,6 +158,19 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             else{
                 linkelated.push(links[i]);
                 links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
+
+                if (suspicious[links[i].source.id]){
+                   if (links[i].source.followers==undefined){
+                       links[i].source.followers = [];
+                   }
+                   links[i].source.followers.push(links[i].target);
+                }
+                else if (suspicious[links[i].target.id]){
+                    if (links[i].target.followers==undefined){
+                        links[i].target.followers = [];
+                    }
+                    links[i].target.followers.push(links[i].source);
+                }
             }
         }
 
@@ -167,9 +182,6 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
 
         updateLinkDistant();
 
-
-
-
         xScale.domain([0, maxT]); // Set time domain
 
 
@@ -178,6 +190,25 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             .start(100, 150, 200);
 
 
+
+        nodes.forEach(function(d) {
+            d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
+            if (d.degree>=2)
+                nodeHighDegree.push(d);
+         });
+        // Horizontal lines
+
+         svg.selectAll(".lineNodes").remove();
+         svg.selectAll(".lineNodes")
+             .data(nodeHighDegree).enter().append("line")
+             .attr("class", "lineNodes")
+             .attr("x1", function(d) {return 0;})
+             .attr("y1", function(d) {return 100;})
+             .attr("x2", function(d) {return 1220;})
+             .attr("y2", function(d) {return 100;})
+             .style("stroke-dasharray", ("1, 1"))
+             .style("stroke-width",0.4)
+             .style("stroke", "#000");
 
         // Add links **************************************************
         svg.selectAll(".linkArc").remove();
@@ -198,6 +229,7 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
         // Other functions *********************************************
         drawLegends();
 
+        orderNodesTimeline();
 
         /*for (var i = 0; i < termArray.length; i++) {
          optArray.push(termArray[i].term);
@@ -208,6 +240,7 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
          source: optArray
          });
          }); */
+
     });
 });
 
@@ -232,7 +265,7 @@ function addLinks(links1) {
         .attr("class", "linkArc")
         .style("stroke", function (d) {return colores_google(d.category);})
         .style("stroke-opacity", 0.3)
-        .style("stroke-width", function (d) { return 2;});
+        .style("stroke-width", function (d) { return 1.5;});
     linkArcs = svg.selectAll(".linkArc");
 }
 
@@ -242,8 +275,8 @@ function addNodes(nodes1) {
     node.enter().append("circle")
         .attr("class", "node")
         .attr('r', function (d) {
-            var size =  Math.pow(d.degree,0.4);
-            return 2+size;
+            var size =  Math.pow((d.degree-1),0.4);
+            return 3+size;
             //return suspicious[d.id] ? 6+size : 3+size;
         })
         .attr('cx', function(d) { return d.x; })
@@ -317,18 +350,7 @@ function computeLinks() {
         .style("stroke", "#000");
     */
 
-    // Horizontal lines
- /*   svg.selectAll(".linePNodes").remove();
-    linePNodes = svg.selectAll(".linePNodes")
-        .data(pNodes).enter().append("line")
-        .attr("class", "linePNodes")
-        .attr("x1", function(d) {return xStep+xScale(d.minY);})
-        .attr("y1", function(d) {return d.y;})
-        .attr("x2", function(d) {return xStep+xScale(d.maxY);})
-        .attr("y2", function(d) {return d.y;})
-        .style("stroke-dasharray", ("1, 1"))
-        .style("stroke-width",0.4)
-        .style("stroke", "#000");*/
+
 }
 
 function tick(){
@@ -400,7 +422,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.y - d.source.y,
-        dr = dy/2;
+        dr = dy;
     if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
     else

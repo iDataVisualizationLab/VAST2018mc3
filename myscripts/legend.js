@@ -176,21 +176,74 @@ function buttonClick1(){
     clickCount1++;
 }
 
+
+
 function orderNodesTimeline(){
     // Stop force layout first
     force.stop();
 
-   /* nodes.sort(function (a, b) {
-        if (a.y > b.y) {
-            return 1;
-        }
-        if (a.y < b.y) {
-            return -1;
-        }
-        return 0;
-    });*/
+    nodes.forEach(function(d) {
+        d.x=xScale(d.listTimes[0]);
+        d.y =0;
+    });
 
-    var step = 10;//10*height/nodes.length;
+    nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
+
+
+    var yStart = height/8;
+    nodes[0].y = yStart;
+
+    var curY =yStart+180;
+    nodeSuspicious.forEach(function(d,i) {
+        if(i>0)
+            d.y=curY+10;
+        if (d.followers){
+            d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
+            d.followers.forEach(function(d2,j) {
+                if (d2.y <=0)    // Make sure that we don't not reset y of follower of multiple suspicious nodes
+                    d2.y=d.y+5+0.3*j;
+                if(i>0)
+                    curY = d2.y;
+            });
+        }
+    });
+
+
+    nodes[0].followers.forEach(function(d,i) {
+        if (d.degree<2)
+            d.y=yStart -20- xScale(d.listTimes[0])/20;
+        else
+            d.y=yStart + xScale(d.listTimes[0])/12;
+    });
+
+     /*
+    nodes[1].followers.forEach(function(d,i) {
+        d.y=yStart +240+xScale(d.listTimes[0])/16;
+    });
+    */
+
+    node.transition().duration(durationTime)
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; });
+    linkArcs.transition().duration(durationTime).attr("d", linkArc2);
+
+    svg.selectAll(".lineNodes").transition().duration(durationTime)
+        .attr("x1", function(d) {return d.x;})
+        .attr("y1", function(d) {return d.y;})
+        .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);;})
+        .attr("y2", function(d) {return d.y;})
+
+
+}
+
+
+
+/*
+function orderNodesTimeline(){
+    // Stop force layout first
+    force.stop();
+
+    var step = height/nodes.length;
     for (var i=0; i< nodes.length; i++) {
         nodes[i].y = i*step;
     }
@@ -203,7 +256,7 @@ function orderNodesTimeline(){
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
     linkArcs.transition().duration(durationTime).attr("d", linkArc2);
-}
+}*/
 
 
 
