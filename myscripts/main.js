@@ -285,73 +285,15 @@ function addNodes(nodes1) {
         .attr("fill-opacity", 1)
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
-        .call(force.drag);
+        .call(force.drag)
+        .on("mouseover", function(d){
+            //debugger;
+            d3.select(this).attr("fill", "#000");
+        });
     node = svg.selectAll(".node");;
 }
 
-function computeLinks() {
-    /*
-    //Create all the line svgs but without locations yet
-    svg.selectAll(".linkArc").remove();
-    linkArcs = svg.append("g").selectAll("path")
-        .data(links, function(d) { return d.id;})
-        .enter().append("path")
-        .attr("class", "linkArc")
-        .style("stroke", function (d) {
-                return colores_google(d.category);
-        })
-        .style("stroke-opacity", 0.3)
-        .style("stroke-width", function (d) {
-            return 2;
-        });
-//            .on('mouseover', mouseoveredLink)
-//            .on('mouseout', mouseoutedLink);
 
-
-
-    svg.selectAll(".node").remove();
-    node = svg.selectAll(".node")
-        .data(nodes, function(d) { return d.id;}).enter().append("circle")
-        .attr("class", "node")
-        .attr('r', function (d) { return suspicious[d.id] ? 6 : 3;})
-        .attr('cx', function(d) { return d.x; })
-        .attr('cy', function(d) { return d.y; })
-        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : "#444"})
-        .attr("fill-opacity", 1)
-        .attr("stroke", "#fff")
-        .attr("stroke-opacity", 1)
-        .call(force.drag);
-
-
-    node.append("text")
-        .attr("class", "nodeText")
-        .text(function(d) { return d.name })
-        .attr("dy", "3px")
-        .style("fill","#000000")
-        .style("text-anchor","end")
-        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
-        .style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "14px");
-    */
-
-    /*
-    svg.selectAll(".nodeLine").remove();
-    svg.selectAll(".nodeLine")
-        .data(nodes).enter()
-        .append("line")
-        .attr("class", "nodeLine")
-        .attr("x1", function(d) { return d.x; })
-        .attr("y1", function(d) { return d.y; })
-        .attr("x2", function(d) { return d.x+xScale(70); })
-        .attr("y2", function(d) { return d.y; })
-        .style("stroke-width",0.5)
-        .style("stroke-opacity",0.5)
-        .style("stroke", "#000");
-    */
-
-
-}
 
 function tick(){
     /*if (force.alpha()<0.01) {
@@ -379,35 +321,6 @@ function tick(){
 
     linkArcs.attr("d", linkArc);
 }
-
-// Adapted from http://bl.ocks.org/3116713
-/*function collide(alpha, nodes, scale) {
-    quadtree = d3.geom.quadtree(nodes);
-    return function(d) {
-        r = d.r + scale.domain()[1] + padding
-        nx1 = d.x - r;
-        nx2 = d.x + r;
-        ny1 = d.y - r;
-        ny2 = d.y + r;
-        return quadtree.visit(function(quad, x1, y1, x2, y2) {
-            var l, x, y;
-            if (quad.point && quad.point !== d) {
-                x = d.x - quad.point.x;
-                y = d.y - quad.point.y;
-                l = Math.sqrt(x * x + y * y);
-                r = d.r + quad.point.r + padding;
-                if (l < r) {
-                    l = (l - r) / l * alpha;
-                    d.x -= x *= l;
-                    d.y -= y *= l;
-                    quad.point.x += x;
-                    quad.point.y += y;
-                }
-            }
-            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-        });
-    };
-};*/
 
 function linkArc(d) {
     var dx = d.target.x - d.source.x,

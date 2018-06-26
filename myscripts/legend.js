@@ -88,7 +88,7 @@ function drawLegends(){
         .attr("x", 8 )
         .attr("y", legendTop2)
         .attr("fill", "#000" )
-        .text("Links (or actions)");
+        .text("Links (or activities)");
 
     svgLegend.selectAll(".lineLegend2")
         .data( d3.range(4) )

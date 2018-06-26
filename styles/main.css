@@ -22,29 +22,31 @@
   box-shadow: 1px 1px 1px #444;
 }
 
-
-.nodeText {
-  background: #91877b;
-  text-shadow: 0 11px 10 rgba(255, 255, 255, 1);
-}
-
-.node {
-  stroke: #fff;
-  stroke-width: 1px;
-  stroke-opacity: 0.6;
-}
-.link {
-  stroke: #555;
-  stroke-opacity: .9;
-}
 .linkArc {
   fill: none;
   stroke: #000;
 }
 
-.node text {
-  font: 9px helvetica;
+.node circle {
+  fill: #ccc;
+  stroke: #000;
+  stroke-width: 1.5px;
 }
+
+.node text {
+  display: none;
+  font: 10px sans-serif;
+}
+
+.node:hover circle {
+  fill: #000;
+}
+
+.node:hover text {
+  display: inline;
+}
+
+
 
 <!-- For the slider -->
 .axis {
