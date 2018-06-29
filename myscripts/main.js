@@ -38,7 +38,7 @@ var nodeHighDegree =[]; // Nodes with degree >=2 to draw timeline
 
 var terms = new Object();
 
-var xStep = 200;
+var xStep = 240;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var yScale;
 var searchTerm ="";
@@ -163,16 +163,31 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
                    if (links[i].source.followers==undefined){
                        links[i].source.followers = [];
                    }
-                   links[i].source.followers.push(links[i].target);
+                   if(isContainedChild(links[i].source.followers, links[i].target)<0)  // No duplicate elements
+                        links[i].source.followers.push(links[i].target);
                 }
                 else if (suspicious[links[i].target.id]){
                     if (links[i].target.followers==undefined){
                         links[i].target.followers = [];
                     }
-                    links[i].target.followers.push(links[i].source);
+                    if(isContainedChild(links[i].target.followers, links[i].source)<0) // No duplicate elements
+                        links[i].target.followers.push(links[i].source);
                 }
             }
         }
+
+        // check if a node for  already exist.
+        function isContainedChild(a, m) {
+            if (a){
+                for (var i=0; i<a.length;i++){
+                    if (a[i].id==m.id)
+                        return i;
+                }
+            }
+            return -1;
+        }
+
+
 
         // Order nodes and links
         nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
@@ -209,6 +224,8 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
              .style("stroke-dasharray", ("1, 1"))
              .style("stroke-width",0.4)
              .style("stroke", "#000");
+
+
 
         // Add links **************************************************
         svg.selectAll(".linkArc").remove();
@@ -269,16 +286,16 @@ function addLinks(links1) {
     linkArcs = svg.selectAll(".linkArc");
 }
 
+function getNodeSize(d) {
+   return  3+ Math.pow((d.degree-1),0.4);
+}
+
 function addNodes(nodes1) {
     node = node.data(nodes1, function(d) { return d.id;});
     node.exit().remove();
     node.enter().append("circle")
         .attr("class", "node")
-        .attr('r', function (d) {
-            var size =  Math.pow((d.degree-1),0.4);
-            return 3+size;
-            //return suspicious[d.id] ? 6+size : 3+size;
-        })
+        .attr('r', getNodeSize)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; })
         .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : "#444"})

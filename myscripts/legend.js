@@ -190,10 +190,10 @@ function orderNodesTimeline(){
     nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
 
 
-    var yStart = height/8;
+    var yStart = height/10;
     nodes[0].y = yStart;
 
-    var curY =yStart+180;
+    var curY =yStart+400;
     nodeSuspicious.forEach(function(d,i) {
         if(i>0)
             d.y=curY+10;
@@ -208,12 +208,15 @@ function orderNodesTimeline(){
         }
     });
 
-
+    var count2 = 0;
     nodes[0].followers.forEach(function(d,i) {
         if (d.degree<2)
             d.y=yStart -20- xScale(d.listTimes[0])/20;
-        else
-            d.y=yStart + xScale(d.listTimes[0])/12;
+        else {
+            d.y=yStart + 10+7*count2;
+            count2++;
+        }
+
     });
 
      /*
@@ -233,6 +236,31 @@ function orderNodesTimeline(){
         .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);;})
         .attr("y2", function(d) {return d.y;})
 
+    svg.selectAll(".nodeText").remove();
+    svg.selectAll(".nodeText")
+        .data(nodeHighDegree).enter().append("text")
+        .attr("class", "nodeText")
+        .text(function(d) {
+            if (suspicious[d.id]!=undefined)
+                return suspicious[d.id].first +" "+suspicious[d.id].last;
+            else
+                return ""+d.id ;
+        })
+        .attr("dy", "4px")
+        .style("fill", function(d){
+            if (suspicious[d.id])
+                return colorSuspicious;
+            else
+                return "#333";
+        })
+        .style("text-anchor","end")
+        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+        //.style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px");
+    svg.selectAll(".nodeText").transition().duration(durationTime)
+        .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
+        .attr("y", function(d) {return d.y;})
 
 }
 

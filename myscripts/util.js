@@ -175,18 +175,6 @@ function mouseouted(d) {
 }
 
 // check if a node for a month m already exist.
-function isContainedChild(a, m) {
-    if (a){
-        for (var i=0; i<a.length;i++){
-            var index = a[i];
-            if (nodes[index].year==m)
-                return i;
-        }
-    }
-    return -1;
-}
-
-// check if a node for a month m already exist.
 function isContainedInteger(a, m) {
     if (a){
         for (var i=0; i<a.length;i++){
