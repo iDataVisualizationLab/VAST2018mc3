@@ -287,8 +287,35 @@ function addNodes(nodes1) {
         .attr("stroke-opacity", 1)
         .call(force.drag)
         .on("mouseover", function(d){
-            //debugger;
-            d3.select(this).attr("fill", "#000");
+            svg.selectAll(".node")
+                .attr("fill-opacity", 0.1)
+                .attr("stroke-opacity", 0);
+            var list = "";
+            svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+                if (l.source.id==d.id || l.target.id==d.id){
+                    list += " "+l.source.id;
+                    list += " "+l.target.id;
+                    return 1;
+                }
+                else
+                    return 0.1;
+            });
+
+            svg.selectAll(".node")
+                .attr("fill-opacity", function(d2){
+                if (list.indexOf(d2.id) >=0){
+                    return 1;
+                }
+                else
+                    return 0.1;
+            });
+
+        })
+        .on("mouseout", function(d){
+            svg.selectAll(".node")
+                .attr("fill-opacity", 1)
+                .attr("stroke-opacity", 1);
+            svg.selectAll(".linkArc").style("stroke-opacity", 0.3);
         });
     node = svg.selectAll(".node");;
 }
