@@ -35,10 +35,11 @@ var nodeCurrent =[], linkCurrent =[];
 var nodeRelated =[], linkelated =[];
 
 var nodeHighDegree =[]; // Nodes with degree >=2 to draw timeline
+var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 
 var terms = new Object();
 
-var xStep = 240;
+var xStep = 260;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var yScale;
 var searchTerm ="";
@@ -174,6 +175,18 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
                         links[i].target.followers.push(links[i].source);
                 }
             }
+            // Compute neighbors
+            if (links[i].source.neighbors==undefined){
+                links[i].source.neighbors = [];
+            }
+            if (links[i].target.neighbors==undefined){
+                links[i].target.neighbors = [];
+            }
+            if(isContainedChild(links[i].source.neighbors, links[i].target)<0)  // No duplicate elements
+                links[i].source.neighbors.push(links[i].target);
+            if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                links[i].target.neighbors.push(links[i].source);
+
         }
 
         // check if a node for  already exist.
@@ -186,7 +199,6 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             }
             return -1;
         }
-
 
 
         // Order nodes and links
@@ -210,9 +222,15 @@ d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
             d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
             if (d.degree>=2)
                 nodeHighDegree.push(d);
-         });
-        // Horizontal lines
+        });
 
+        nodes.forEach(function(d) {
+             if (d.neighbors.length>=2)
+                nodeHighNeighbor.push(d);
+        });
+
+
+        // Horizontal lines
          svg.selectAll(".lineNodes").remove();
          svg.selectAll(".lineNodes")
              .data(nodeHighDegree).enter().append("line")
@@ -302,6 +320,7 @@ function addNodes(nodes1) {
         .attr("fill-opacity", 1)
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
+        .attr("stroke-width", 0.5)
         .call(force.drag)
         .on("mouseover", function(d){
             svg.selectAll(".node")

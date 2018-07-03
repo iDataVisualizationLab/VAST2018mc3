@@ -190,34 +190,62 @@ function orderNodesTimeline(){
     nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
 
 
-    var yStart = height/10;
-    nodes[0].y = yStart;
-
-    var curY =yStart+400;
+    var yStart = height/5;
+    var curY =yStart;
     nodeSuspicious.forEach(function(d,i) {
-        if(i>0)
-            d.y=curY+10;
-        if (d.followers){
+        if(i==0){
+            d.y = yStart;
+            var previousNodeSize = 23;
             d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
-            d.followers.forEach(function(d2,j) {
-                if (d2.y <=0)    // Make sure that we don't not reset y of follower of multiple suspicious nodes
-                    d2.y=d.y+5+0.3*j;
-                if(i>0)
-                    curY = d2.y;
+            d.followers.forEach(function(d) {
+                if (d.neighbors.length<2)
+                    d.y=yStart -20- xScale(d.listTimes[0])/10;
+                else {
+                    curY = curY + previousNodeSize + getNodeSize(d);
+                    previousNodeSize = getNodeSize(d);
+                    d.y=curY;
+                }
+
             });
         }
-    });
+        else{
+            if (d.neighbors.length==1)  // Suspious with single neighbor
+                d.y=d.neighbors[0].y+15;
 
-    var count2 = 0;
-    nodes[0].followers.forEach(function(d,i) {
-        if (d.degree<2)
-            d.y=yStart -20- xScale(d.listTimes[0])/20;
-        else {
-            d.y=yStart + 10+7*count2;
-            count2++;
+            else
+                d.y=curY+10;
+            curY = d.y+1;
+            if (d.followers){
+                d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
+                var previousNode = d;
+                d.followers.forEach(function(d2,j) {
+                    if (d2.y <=0){// Make sure that we don't not reset y of follower of multiple suspicious nodes
+                        if (d2.neighbors.length<2){
+                            if (previousNode.neighbors.length<2)
+                                curY+=0.2;
+                            else
+                                curY+=getNodeSize(previousNode)+getNodeSize(d2);
+                            previousNode =d2;
+                            d2.y=curY;
+                        }
+                        else{
+                            curY = curY + getNodeSize(previousNode) + getNodeSize(d2);
+                            previousNode = d2;
+                            d2.y=curY;
+                        }
+
+
+
+                    }
+
+                  //  if(i>0)
+                  //      curY = d2.y;
+                });
+            }
         }
-
     });
+
+
 
      /*
     nodes[1].followers.forEach(function(d,i) {
@@ -238,7 +266,7 @@ function orderNodesTimeline(){
 
     svg.selectAll(".nodeText").remove();
     svg.selectAll(".nodeText")
-        .data(nodeHighDegree).enter().append("text")
+        .data(nodeHighNeighbor).enter().append("text")
         .attr("class", "nodeText")
         .text(function(d) {
             if (suspicious[d.id]!=undefined)
