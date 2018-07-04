@@ -69,215 +69,217 @@ svg.call(tip);
 
 var minT=1000000, maxT=0;
 var suspicious = {};
+var people = {};
 
 
-
-
-d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
-    data1.forEach(function (d) {
-        suspicious[d.ID] = d;
+d3.csv("data/CompanyIndex.csv", function(error, data_) {
+    data_.forEach(function (d) {
+        people[d.ID] = d;
     });
-
-
-    d3.csv("data/involved.csv", function (error, data2) {
-        if (error) throw error;
-        data = data2;
-        data.forEach(function (d) {
-            // var year =  new Date(d.date).getMonth();
-            var day = Math.round(+d["X4"] / (24 * 3600));
-            minT = Math.min(minT, day);
-            maxT = Math.max(maxT, day);
-
-            var id1 = +d["X1"];
-            if (terms[id1] == undefined) {
-                terms[id1] = new Object();
-                terms[id1].degree = 1;
-                terms[id1].id = id1;
-                terms[id1].listTimes = [];
-                terms[id1].listTimes.push(day);
-                nodes.push(terms[id1]);
-            }
-            else {
-                terms[id1].degree++;
-                terms[id1].listTimes.push(day);
-            }
-
-
-            if (terms[id1][day] == undefined) {
-                terms[id1][day] = {};
-                terms[id1][day].id = id1;
-                terms[id1][day].rows = [];
-
-            }
-            terms[id1][day].rows.push(d)
-
-
-            var id2 = +d["X3"];
-            if (terms[id2] == undefined) {
-                terms[id2] = new Object();
-                terms[id2].degree = 1;
-                terms[id2].id = id2;
-                terms[id2].listTimes = [];
-                terms[id2].listTimes.push(day);
-                nodes.push(terms[id2]);
-            }
-            else {
-                terms[id2].degree++;
-                terms[id2].listTimes.push(day);
-            }
-
-
-            if (terms[id2][day] == undefined) {
-                terms[id2][day] = {};
-                terms[id2][day].id = id2;
-                terms[id2][day].rows = [];
-
-            }
-            terms[id2][day].rows.push(d)
-
-            var l = new Object();
-            l.source = terms[id1];
-            l.target = terms[id2];
-            l.time = day;
-            l.id = l.source.id + " " + l.target.id+" "+d["X4"];
-            l.category = d["X2"];
-            links.push(l);
+    d3.csv("data/involvedCompanyIndex.csv", function(error, data1) {
+        data1.forEach(function (d) {
+            suspicious[d.ID] = d;
         });
+        d3.csv("data/involved.csv", function (error, data2) {
+            if (error) throw error;
+            data = data2;
+            data.forEach(function (d) {
+                // var year =  new Date(d.date).getMonth();
+                var day = Math.round(+d["X4"] / (24 * 3600));
+                minT = Math.min(minT, day);
+                maxT = Math.max(maxT, day);
 
-        // Compute Suspicious nodes
-        for (var i=0; i< nodes.length;i++){
-            if (suspicious[nodes[i].id])
-                nodeSuspicious.push(nodes[i]);
-            else
-                nodeRelated.push(nodes[i]);
-        }
-        for (var i=0; i< links.length;i++){
-            if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
-                linkSuspicious.push(links[i]);
-                links[i].betweenSuspicious = true;  // Add new property to indicate links between suspicious
-            }
-            else{
-                linkelated.push(links[i]);
-                links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
-
-                if (suspicious[links[i].source.id]){
-                   if (links[i].source.followers==undefined){
-                       links[i].source.followers = [];
-                   }
-                   if(isContainedChild(links[i].source.followers, links[i].target)<0)  // No duplicate elements
-                        links[i].source.followers.push(links[i].target);
+                var id1 = +d["X1"];
+                if (terms[id1] == undefined) {
+                    terms[id1] = new Object();
+                    terms[id1].degree = 1;
+                    terms[id1].id = id1;
+                    terms[id1].listTimes = [];
+                    terms[id1].listTimes.push(day);
+                    nodes.push(terms[id1]);
                 }
-                else if (suspicious[links[i].target.id]){
-                    if (links[i].target.followers==undefined){
-                        links[i].target.followers = [];
+                else {
+                    terms[id1].degree++;
+                    terms[id1].listTimes.push(day);
+                }
+
+
+                if (terms[id1][day] == undefined) {
+                    terms[id1][day] = {};
+                    terms[id1][day].id = id1;
+                    terms[id1][day].rows = [];
+
+                }
+                terms[id1][day].rows.push(d)
+
+
+                var id2 = +d["X3"];
+                if (terms[id2] == undefined) {
+                    terms[id2] = new Object();
+                    terms[id2].degree = 1;
+                    terms[id2].id = id2;
+                    terms[id2].listTimes = [];
+                    terms[id2].listTimes.push(day);
+                    nodes.push(terms[id2]);
+                }
+                else {
+                    terms[id2].degree++;
+                    terms[id2].listTimes.push(day);
+                }
+
+
+                if (terms[id2][day] == undefined) {
+                    terms[id2][day] = {};
+                    terms[id2][day].id = id2;
+                    terms[id2][day].rows = [];
+
+                }
+                terms[id2][day].rows.push(d)
+
+                var l = new Object();
+                l.source = terms[id1];
+                l.target = terms[id2];
+                l.time = day;
+                l.id = l.source.id + " " + l.target.id+" "+d["X4"];
+                l.category = d["X2"];
+                links.push(l);
+            });
+
+            // Compute Suspicious nodes
+            for (var i=0; i< nodes.length;i++){
+                if (suspicious[nodes[i].id])
+                    nodeSuspicious.push(nodes[i]);
+                else
+                    nodeRelated.push(nodes[i]);
+            }
+            for (var i=0; i< links.length;i++){
+                if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
+                    linkSuspicious.push(links[i]);
+                    links[i].betweenSuspicious = true;  // Add new property to indicate links between suspicious
+                }
+                else{
+                    linkelated.push(links[i]);
+                    links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
+
+                    if (suspicious[links[i].source.id]){
+                       if (links[i].source.followers==undefined){
+                           links[i].source.followers = [];
+                       }
+                       if(isContainedChild(links[i].source.followers, links[i].target)<0)  // No duplicate elements
+                            links[i].source.followers.push(links[i].target);
                     }
-                    if(isContainedChild(links[i].target.followers, links[i].source)<0) // No duplicate elements
-                        links[i].target.followers.push(links[i].source);
+                    else if (suspicious[links[i].target.id]){
+                        if (links[i].target.followers==undefined){
+                            links[i].target.followers = [];
+                        }
+                        if(isContainedChild(links[i].target.followers, links[i].source)<0) // No duplicate elements
+                            links[i].target.followers.push(links[i].source);
+                    }
                 }
-            }
-            // Compute neighbors
-            if (links[i].source.neighbors==undefined){
-                links[i].source.neighbors = [];
-            }
-            if (links[i].target.neighbors==undefined){
-                links[i].target.neighbors = [];
-            }
-            if(isContainedChild(links[i].source.neighbors, links[i].target)<0)  // No duplicate elements
-                links[i].source.neighbors.push(links[i].target);
-            if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
-                links[i].target.neighbors.push(links[i].source);
-
-        }
-
-        // check if a node for  already exist.
-        function isContainedChild(a, m) {
-            if (a){
-                for (var i=0; i<a.length;i++){
-                    if (a[i].id==m.id)
-                        return i;
+                // Compute neighbors
+                if (links[i].source.neighbors==undefined){
+                    links[i].source.neighbors = [];
                 }
+                if (links[i].target.neighbors==undefined){
+                    links[i].target.neighbors = [];
+                }
+                if(isContainedChild(links[i].source.neighbors, links[i].target)<0)  // No duplicate elements
+                    links[i].source.neighbors.push(links[i].target);
+                if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                    links[i].target.neighbors.push(links[i].source);
+
             }
-            return -1;
-        }
+
+            // check if a node for  already exist.
+            function isContainedChild(a, m) {
+                if (a){
+                    for (var i=0; i<a.length;i++){
+                        if (a[i].id==m.id)
+                            return i;
+                    }
+                }
+                return -1;
+            }
 
 
-        // Order nodes and links
-        nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
-        links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
-
-
-
-        updateLinkDistant();
-
-        xScale.domain([0, maxT]); // Set time domain
-
-
-        force.nodes(nodes)
-            .links(links)
-            .start(100, 150, 200);
+            // Order nodes and links
+            nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
+            links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
 
 
 
-        nodes.forEach(function(d) {
-            d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
-            if (d.degree>=2)
-                nodeHighDegree.push(d);
+            updateLinkDistant();
+
+            xScale.domain([0, maxT]); // Set time domain
+
+
+            force.nodes(nodes)
+                .links(links)
+                .start(100, 150, 200);
+
+
+
+            nodes.forEach(function(d) {
+                d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
+                if (d.degree>=2)
+                    nodeHighDegree.push(d);
+            });
+
+            nodes.forEach(function(d) {
+                 if (d.neighbors.length>=2)
+                    nodeHighNeighbor.push(d);
+            });
+
+
+            // Horizontal lines
+             svg.selectAll(".lineNodes").remove();
+             svg.selectAll(".lineNodes")
+                 .data(nodeHighDegree).enter().append("line")
+                 .attr("class", "lineNodes")
+                 .attr("x1", function(d) {return 0;})
+                 .attr("y1", function(d) {return 100;})
+                 .attr("x2", function(d) {return 1220;})
+                 .attr("y2", function(d) {return 100;})
+                 .style("stroke-dasharray", ("1, 1"))
+                 .style("stroke-width",0.4)
+                 .style("stroke", "#000");
+
+
+
+            // Add links **************************************************
+            svg.selectAll(".linkArc").remove();
+            linkArcs = svg.selectAll(".linkArc");
+            addLinks(links);
+
+            // Add nodes **************************************************
+            svg.selectAll(".node").remove();
+            node = svg.selectAll(".node");
+            addNodes(nodes)
+
+
+            force.on("tick", function () {
+                tick();
+            });
+
+
+            // Other functions *********************************************
+            drawLegends();
+
+            orderNodesTimeline();
+
+            /*for (var i = 0; i < termArray.length; i++) {
+             optArray.push(termArray[i].term);
+             }
+             optArray = optArray.sort();
+             $(function () {
+             $("#search").autocomplete({
+             source: optArray
+             });
+             }); */
+
         });
-
-        nodes.forEach(function(d) {
-             if (d.neighbors.length>=2)
-                nodeHighNeighbor.push(d);
-        });
-
-
-        // Horizontal lines
-         svg.selectAll(".lineNodes").remove();
-         svg.selectAll(".lineNodes")
-             .data(nodeHighDegree).enter().append("line")
-             .attr("class", "lineNodes")
-             .attr("x1", function(d) {return 0;})
-             .attr("y1", function(d) {return 100;})
-             .attr("x2", function(d) {return 1220;})
-             .attr("y2", function(d) {return 100;})
-             .style("stroke-dasharray", ("1, 1"))
-             .style("stroke-width",0.4)
-             .style("stroke", "#000");
-
-
-
-        // Add links **************************************************
-        svg.selectAll(".linkArc").remove();
-        linkArcs = svg.selectAll(".linkArc");
-        addLinks(links);
-
-        // Add nodes **************************************************
-        svg.selectAll(".node").remove();
-        node = svg.selectAll(".node");
-        addNodes(nodes)
-
-
-        force.on("tick", function () {
-            tick();
-        });
-
-
-        // Other functions *********************************************
-        drawLegends();
-
-        orderNodesTimeline();
-
-        /*for (var i = 0; i < termArray.length; i++) {
-         optArray.push(termArray[i].term);
-         }
-         optArray = optArray.sort();
-         $(function () {
-         $("#search").autocomplete({
-         source: optArray
-         });
-         }); */
-
     });
-});
+ });
 
 function updateLinkDistant() {
     force.linkDistance(function (l,i) {
@@ -300,12 +302,12 @@ function addLinks(links1) {
         .attr("class", "linkArc")
         .style("stroke", function (d) {return colores_google(d.category);})
         .style("stroke-opacity", 0.3)
-        .style("stroke-width", function (d) { return 1.5;});
+        .style("stroke-width", function (d) { return 1;});
     linkArcs = svg.selectAll(".linkArc");
 }
 
 function getNodeSize(d) {
-   return  3+ Math.pow((d.degree-1),0.4);
+   return  2+ Math.pow((d.degree-1),0.35);
 }
 
 function addNodes(nodes1) {
@@ -316,46 +318,45 @@ function addNodes(nodes1) {
         .attr('r', getNodeSize)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; })
-        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : "#444"})
+        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : ((d.neighbors.length<2) ? color1 : color2); })
         .attr("fill-opacity", 1)
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
         .attr("stroke-width", 0.5)
         .call(force.drag)
-        .on("mouseover", function(d){
-            svg.selectAll(".node")
-                .attr("fill-opacity", 0.1)
-                .attr("stroke-opacity", 0);
-            var list = "";
-            svg.selectAll(".linkArc").style("stroke-opacity", function(l){
-                if (l.source.id==d.id || l.target.id==d.id){
-                    list += " "+l.source.id;
-                    list += " "+l.target.id;
-                    return 1;
-                }
-                else
-                    return 0.1;
-            });
-
-            svg.selectAll(".node")
-                .attr("fill-opacity", function(d2){
-                if (list.indexOf(d2.id) >=0){
-                    return 1;
-                }
-                else
-                    return 0.1;
-            });
-
-        })
-        .on("mouseout", function(d){
-            svg.selectAll(".node")
-                .attr("fill-opacity", 1)
-                .attr("stroke-opacity", 1);
-            svg.selectAll(".linkArc").style("stroke-opacity", 0.3);
-        });
-    node = svg.selectAll(".node");;
+        .on("mouseover", mouseoverNode)
+        .on("mouseout", mouseoutNode);
+    node = svg.selectAll(".node");
 }
 
+function mouseoverNode(d){
+     var list = "";
+    svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+        if (l.source.id==d.id || l.target.id==d.id){
+            list += " "+l.source.id;
+            list += " "+l.target.id;
+            return 0.7;
+        }
+        else
+            return 0.02;
+    });
+    svg.selectAll(".node")
+        .attr("fill-opacity", function(d2){  return (list.indexOf(d2.id) >=0) ? 1 : 0.02; });
+    svg.selectAll(".nodeText")    
+        .attr("fill-opacity", function(d2){  return (list.indexOf(d2.id) >=0) ? 1 : 0.05; });
+    svg.selectAll(".lineNodes")
+        .attr("stroke-opacity", function(d2){ return (list.indexOf(d2.id) >=0) ? 1 : 0; });        
+}
+
+function mouseoutNode(d) {
+    svg.selectAll(".node")
+        .attr("fill-opacity", 1);
+    svg.selectAll(".nodeText")
+        .attr("fill-opacity", 1);
+    svg.selectAll(".linkArc").style("stroke-opacity", 0.3);
+    svg.selectAll(".lineNodes")
+        .attr("stroke-opacity",1);
+}
 
 
 function tick(){

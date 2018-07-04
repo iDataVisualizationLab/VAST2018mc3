@@ -8,8 +8,8 @@
 #controlPanel{
   position:absolute;
   background-color: rgba(200,200,200, 0.95);
-  left:10;
-  top:10;
+  left:1px;
+  top:10px;
 }
 
 #button1{

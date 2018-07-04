@@ -15,6 +15,9 @@ var clickRelatedCount1 =0;
 var clickCategoryCounts =[0,0,0,0];
 
 var colorSuspicious = "#a00";
+var color1 = "#777";
+var color2 = "#000";
+
 var durationTime =2000;
 
 function colores_google(n) {
@@ -34,38 +37,67 @@ function drawLegends(){
         .attr("x", 8 )
         .attr("y", legendTop1)
         .attr("fill", "#000" )
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
+        .style("font-weight", "bold")
         .text("Nodes (or people)");
 
     svgLegend.append("text")
         .attr("class","textLegend1")
-        .attr("x", 30 )
-        .attr("y", legendTop1+20)
+        .attr("x", 25 )
+        .attr("y", legendTop1+19)
         .attr("fill", colorSuspicious )
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
         .text("Suspicious");
     svgLegend.append("circle")
         .attr("class","circleLegend1")
         .attr("r", 6 )
-        .attr("cx", 16 )
-        .attr("cy", legendTop1+15)
+        .attr("cx", 15 )
+        .attr("cy", legendTop1+14)
         .attr("fill", colorSuspicious )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1);
+   
     svgLegend.append("text")
         .attr("class","textLegend1")
-        .attr("x", 30 )
-        .attr("y", legendTop1+40)
-        .attr("fill", "#444" )
-        .text("Related")
+        .attr("x", 25 )
+        .attr("y", legendTop1+36)
+        .attr("fill", color2 )
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
+        .text("Associated to many Suspicious")
         .on("click", removeRelated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
         .attr("r", 4 )
-        .attr("cx", 16 )
-        .attr("cy", legendTop1+35)
-        .attr("fill", "#333" )
+        .attr("cx", 15 )
+        .attr("cy", legendTop1+31)
+        .attr("fill", color2 )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
         .on("click", removeRelated);
+
+    svgLegend.append("text")
+        .attr("class","textLegend1")
+        .attr("x", 25 )
+        .attr("y", legendTop1+52)
+        .attr("fill", color1 )
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
+        .text("Associated to 1 Suspicious")
+        .on("click", removeRelated);
+    svgLegend.append("circle")
+        .attr("class","circleLegend1")
+        .attr("r", 4 )
+        .attr("cx", 15 )
+        .attr("cy", legendTop1+48)
+        .attr("fill", color1 )
+        .attr("stroke", "#fff" )
+        .attr("stroke-width", 1)
+        .on("click", removeRelated);    
+
+        
 
     function removeRelated(){
         if (clickRelatedCount1%2==0){
@@ -81,25 +113,28 @@ function drawLegends(){
         clickRelatedCount1++;
     }
 
-    var legendTop2 = 150;
+    var legendTop2 = 154;
     var scale = d3.scale.linear().domain([-1, 10]).range([legendTop2, legendTop2+180]);
     svgLegend.append("text")
         .attr("class","textTitle2")
         .attr("x", 8 )
-        .attr("y", legendTop2)
+        .attr("y", legendTop2+2)
         .attr("fill", "#000" )
-        .text("Links (or activities)");
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
+        .style("font-weight", "bold")
+       .text("Links (or activities)");
 
     svgLegend.selectAll(".lineLegend2")
         .data( d3.range(4) )
         .enter().append("line")
         .attr("class","lineLegend2")
-        .attr("x1", 8 )
+        .attr("x1", 7 )
         .attr("y1", scale )
-        .attr("x2", 30 )
+        .attr("x2", 24 )
         .attr("y2", scale )
         .attr("stroke", function(d,i) { return colores_google(i); } )
-        .attr("stroke-width",2);
+        .attr("stroke-width",1.5);
 
     // Count the number of transactions in each category
     for (var j=0; j<links.length;j++){
@@ -125,11 +160,13 @@ function drawLegends(){
         .enter()
         .append("text")
         .attr("class","textLegend2")
-        .attr("x", 33 )
+        .attr("x", 28 )
         .attr("y", scale )
         .attr("dy", 5 )
         .attr("fill", function(d,i) { return colores_google(i); } )
         .on("click", function(d,i) { removeCategory(i) ;})
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
         .text(function(d,i) {
           return transactions[i] +" ("+transCounts[i]+")";});
 
@@ -186,9 +223,7 @@ function orderNodesTimeline(){
         d.x=xScale(d.listTimes[0]);
         d.y =0;
     });
-
     nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
-
 
     var yStart = height/5;
     var curY =yStart;
@@ -205,16 +240,14 @@ function orderNodesTimeline(){
                     previousNodeSize = getNodeSize(d);
                     d.y=curY;
                 }
-
             });
         }
         else{
             if (d.neighbors.length==1)  // Suspious with single neighbor
-                d.y=d.neighbors[0].y+15;
-
+                d.y=d.neighbors[0].y+13;
             else
                 d.y=curY+10;
-            curY = d.y+1;
+            curY = d.y;
             if (d.followers){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 var previousNode = d;
@@ -233,25 +266,11 @@ function orderNodesTimeline(){
                             previousNode = d2;
                             d2.y=curY;
                         }
-
-
-
                     }
-
-                  //  if(i>0)
-                  //      curY = d2.y;
                 });
             }
         }
     });
-
-
-
-     /*
-    nodes[1].followers.forEach(function(d,i) {
-        d.y=yStart +240+xScale(d.listTimes[0])/16;
-    });
-    */
 
     node.transition().duration(durationTime)
         .attr('cx', function(d) { return d.x; })
@@ -272,7 +291,7 @@ function orderNodesTimeline(){
             if (suspicious[d.id]!=undefined)
                 return suspicious[d.id].first +" "+suspicious[d.id].last;
             else
-                return ""+d.id ;
+                return people[d.id].first +" "+people[d.id].last;
         })
         .attr("dy", "4px")
         .style("fill", function(d){
@@ -285,7 +304,14 @@ function orderNodesTimeline(){
         .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
         //.style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
         .attr("font-family", "sans-serif")
-        .attr("font-size", "12px");
+        .attr("font-size", function(d) {
+            if (suspicious[d.id]!=undefined)
+                return 13;
+            else
+                return 5+getNodeSize(d);
+        })
+        .on("mouseover", mouseoverNode)
+        .on("mouseout", mouseoutNode);
     svg.selectAll(".nodeText").transition().duration(durationTime)
         .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
         .attr("y", function(d) {return d.y;})
@@ -357,37 +383,6 @@ function updateTransition(durationTime, timeY){  // timeY is the position of tim
     node.transition().duration(durationTime)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
-  /*
-
-   svg.selectAll(".linePNodes").transition().duration(durationTime)
-   .attr("x1", function(d) {return xStep+xScale(d.minY);})
-   .attr("y1", function(d) {return d.y;})
-   .attr("x2", function(d) {return xStep+xScale(d.maxY);})
-   .attr("y2", function(d) {return d.y;});
-
-
-
-   svg.selectAll(".nodeText").transition().duration(durationTime)
-   .text(function(d) { return d.name; })
-   .attr("dy", "3px");
-
-   svg.selectAll(".nodeLine").transition().duration(durationTime)
-   .attr("x1", function(d) {return xStep+d.x;})
-   .attr("y1", function(d) {return d.y;})
-   .attr("x2", function(d) {return xStep+d.x+xScale(70);})
-   .attr("y2", function(d) {return d.y;});
-
-   */
-  /*
-   svg.selectAll(".layer").transition().duration(durationTime)
-   .attr("d", function(d) {
-   for (var m=numYear-1; m>=0; m--){
-   d.yearly[m].yNode = d.y;     // Copy node y coordinate
-   // if (d.yearly[m].value==0)
-   //     d.yearly.splice(m,1);
-   }
-   return area(d.yearly); }) ;
-   */
 
     linkArcs.transition().duration(durationTime).attr("d", linkArc2);
 }
