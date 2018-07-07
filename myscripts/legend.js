@@ -28,7 +28,7 @@ function colores_google(n) {
 function drawLegends(){
     var svgLegend = d3.select("#controlPanel")
         .append("svg")
-        .attr("width", 200)
+        .attr("width", 220)
         .attr("height",800);
 
     var legendTop1 = 70;
@@ -49,7 +49,9 @@ function drawLegends(){
         .attr("fill", colorSuspicious )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
-        .text("Suspicious");
+        .on("mouseover", function(d){ mouseoverNodes(nodeSuspicious);})
+        .on("mouseout", mouseoutNode)
+        .text("Suspicious"+" ("+nodeSuspicious.length+")");
     svgLegend.append("circle")
         .attr("class","circleLegend1")
         .attr("r", 6 )
@@ -57,8 +59,11 @@ function drawLegends(){
         .attr("cy", legendTop1+14)
         .attr("fill", colorSuspicious )
         .attr("stroke", "#fff" )
-        .attr("stroke-width", 1);
-   
+        .attr("stroke-width", 1)
+        .on("mouseover", function(d){ mouseoverNodes(nodeSuspicious);})
+        .on("mouseout", mouseoutNode);
+    
+
     svgLegend.append("text")
         .attr("class","textLegend1")
         .attr("x", 25 )
@@ -66,7 +71,7 @@ function drawLegends(){
         .attr("fill", color2 )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
-        .text("Associated to many Suspicious")
+        .text("Associated to many suspicious"+" ("+nodeAssociated2.length+")")
         .on("click", removeRelated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
@@ -85,7 +90,7 @@ function drawLegends(){
         .attr("fill", color1 )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
-        .text("Associated to 1 Suspicious")
+        .text("Associated to 1 suspicious"+" ("+nodeAssociated1.length+")")
         .on("click", removeRelated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
@@ -317,31 +322,6 @@ function orderNodesTimeline(){
         .attr("y", function(d) {return d.y;})
 
 }
-
-
-
-/*
-function orderNodesTimeline(){
-    // Stop force layout first
-    force.stop();
-
-    var step = height/nodes.length;
-    for (var i=0; i< nodes.length; i++) {
-        nodes[i].y = i*step;
-    }
-
-    nodes.forEach(function(d) {
-        d.x=xScale(d.listTimes[0]);
-    });
-
-    node.transition().duration(durationTime)
-        .attr('cx', function(d) { return d.x; })
-        .attr('cy', function(d) { return d.y; });
-    linkArcs.transition().duration(durationTime).attr("d", linkArc2);
-}*/
-
-
-
 
 
 

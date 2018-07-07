@@ -32,7 +32,7 @@ var node,linkArcs;
 var nodes =[], links =[];
 var nodeSuspicious =[], linkSuspicious =[];
 var nodeCurrent =[], linkCurrent =[];
-var nodeRelated =[], linkelated =[];
+var nodeAssociated1 =[], nodeAssociated2 =[], linkeAssociated =[];
 
 var nodeHighDegree =[]; // Nodes with degree >=2 to draw timeline
 var nodeHighNeighbor =[]; // Nodes with neighbors >=2
@@ -145,20 +145,14 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 links.push(l);
             });
 
-            // Compute Suspicious nodes
-            for (var i=0; i< nodes.length;i++){
-                if (suspicious[nodes[i].id])
-                    nodeSuspicious.push(nodes[i]);
-                else
-                    nodeRelated.push(nodes[i]);
-            }
+            
             for (var i=0; i< links.length;i++){
                 if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
                     linkSuspicious.push(links[i]);
                     links[i].betweenSuspicious = true;  // Add new property to indicate links between suspicious
                 }
                 else{
-                    linkelated.push(links[i]);
+                    linkeAssociated.push(links[i]);
                     links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
 
                     if (suspicious[links[i].source.id]){
@@ -190,6 +184,16 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
             }
 
+            // Compute Suspicious nodes
+            for (var i=0; i< nodes.length;i++){
+                if (suspicious[nodes[i].id])
+                    nodeSuspicious.push(nodes[i]);
+                else if (nodes[i].neighbors.length<2)
+                    nodeAssociated1.push(nodes[i]);
+                else 
+                    nodeAssociated2.push(nodes[i]);
+            }
+
             // check if a node for  already exist.
             function isContainedChild(a, m) {
                 if (a){
@@ -206,18 +210,13 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
             links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
 
-
-
             updateLinkDistant();
-
             xScale.domain([0, maxT]); // Set time domain
 
 
             force.nodes(nodes)
                 .links(links)
                 .start(100, 150, 200);
-
-
 
             nodes.forEach(function(d) {
                 d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
@@ -241,7 +240,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                  .attr("x2", function(d) {return 1220;})
                  .attr("y2", function(d) {return 100;})
                  .style("stroke-dasharray", ("1, 1"))
-                 .style("stroke-width",0.4)
+                 .style("stroke-width",1)
                  .style("stroke", "#000");
 
 
@@ -340,15 +339,38 @@ function mouseoverNode(d){
         else
             return 0.02;
     });
-    svg.selectAll(".node")
-        .attr("fill-opacity", function(d2){  return (list.indexOf(d2.id) >=0) ? 1 : 0.02; });
-    svg.selectAll(".nodeText")    
-        .attr("fill-opacity", function(d2){  return (list.indexOf(d2.id) >=0) ? 1 : 0.05; });
-    svg.selectAll(".lineNodes")
-        .attr("stroke-opacity", function(d2){ return (list.indexOf(d2.id) >=0) ? 1 : 0; });        
+    mouseoverIDs(list); 
 }
 
-function mouseoutNode(d) {
+
+// Mouseover the list of node ids in the string input str
+function mouseoverNodes(nodes_){
+    var str = "";
+    for (var i=0; i<nodes_.length;i++) {
+        str += " "+nodes_[i].id;
+    }
+    mouseoverIDs(str);
+}
+
+// Mouseover the list of node ids in the string input str
+function mouseoverIDs(str){
+    svg.selectAll(".node")
+        .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.02; });
+    svg.selectAll(".nodeText")    
+        .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.05; });
+    svg.selectAll(".lineNodes")
+        .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? 1 : 0; });  
+    /* svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+        if (str.indexOf(l.source.id)>=0 && str.indexOf(l.target.id)>=0){
+            return 0.7;
+        }
+        else
+            return 0.02;
+    });*/          
+}
+
+
+function mouseoutNode() {
     svg.selectAll(".node")
         .attr("fill-opacity", 1);
     svg.selectAll(".nodeText")
