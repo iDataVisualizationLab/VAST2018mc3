@@ -39,7 +39,7 @@ var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 
 var terms = new Object();
 
-var xStep = 260;
+var xStep = 290;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var yScale;
 var searchTerm ="";
@@ -304,7 +304,7 @@ function addLinks(links1) {
         .attr("class", "linkArc")
         .style("stroke", function (d) {return colores_google(d.category);})
         .style("stroke-opacity", 0.4)
-        .style("stroke-width", function (d) { return 2;});
+        .style("stroke-width", function (d) { return 1;});
     linkArcs = svg.selectAll(".linkArc");
 }
 
@@ -329,11 +329,11 @@ function addNodes(nodes1) {
 }
 
 function mouseoverNode(d){
-     var list = "";
+     var list = " ";
     svg.selectAll(".linkArc").style("stroke-opacity", function(l){
         if (l.source.id==d.id || l.target.id==d.id){
-            list += " "+l.source.id;
-            list += " "+l.target.id;
+            list += l.source.id+" ";
+            list += l.target.id+" ";
             return 0.7;
         }
         else
@@ -343,14 +343,16 @@ function mouseoverNode(d){
 }
 
 
-// Mouseover the list of node ids in the string input str
+// Mouseover the list of nodes
 function mouseoverNodes(nodes_){
-    var str = "";
+    var str = " ";
     for (var i=0; i<nodes_.length;i++) {
-        str += " "+nodes_[i].id;
+        str += nodes_[i].id+" ";
     }
     mouseoverIDs(str);
+    mouseoverLinksIDs(str);
 }
+
 
 // Mouseover the list of node ids in the string input str
 function mouseoverIDs(str){
@@ -360,14 +362,18 @@ function mouseoverIDs(str){
     svg.selectAll(".nodeText")    
         .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.05; });
     svg.selectAll(".lineNodes")
-        .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? 1 : 0; });  
-    /* svg.selectAll(".linkArc").style("stroke-opacity", function(l){
-        if (str.indexOf(l.source.id)>=0 && str.indexOf(l.target.id)>=0){
-            return 0.7;
-        }
-        else
+        .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? 1 : 0; });
+}
+
+// Mouseover the list of node ids in the string input str
+function mouseoverLinksIDs(str){
+    svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+         if (str.indexOf(" "+l.source.id+" ")>=0 && str.indexOf(" "+l.target.id+" ")>=0){
+             return 0.7;
+         }
+         else
             return 0.02;
-    });*/          
+    });
 }
 
 

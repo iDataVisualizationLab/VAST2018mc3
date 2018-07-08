@@ -8,6 +8,7 @@
 
 var transactions = ["Call", "Email", "Purchase", "Meeting"];
 var transCounts = [0, 0, 0, 0];
+var linkArrays = [[], [], [], []];
 
 var clickCount1 =0;
 
@@ -72,6 +73,8 @@ function drawLegends(){
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
         .text("Associated to many suspicious"+" ("+nodeAssociated2.length+")")
+        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated2);})
+        .on("mouseout", mouseoutNode)
         .on("click", removeRelated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
@@ -81,6 +84,8 @@ function drawLegends(){
         .attr("fill", color2 )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
+        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated2);})
+        .on("mouseout", mouseoutNode)
         .on("click", removeRelated);
 
     svgLegend.append("text")
@@ -91,6 +96,8 @@ function drawLegends(){
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
         .text("Associated to 1 suspicious"+" ("+nodeAssociated1.length+")")
+        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
+        .on("mouseout", mouseoutNode)
         .on("click", removeRelated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
@@ -100,6 +107,8 @@ function drawLegends(){
         .attr("fill", color1 )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
+        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
+        .on("mouseout", mouseoutNode)
         .on("click", removeRelated);    
 
         
@@ -145,15 +154,19 @@ function drawLegends(){
     for (var j=0; j<links.length;j++){
         if (links[j].category =="0"){
             transCounts[0]++;
+            linkArrays[0].push(links[j]);
         }
         else if (links[j].category =="1"){
             transCounts[1]++;
+            linkArrays[1].push(links[j]);
         }
         else if (links[j].category =="2"){  // Meetings
             transCounts[2]++;
+            linkArrays[2].push(links[j]);
         }
         else if (links[j].category =="3"){  // Purchases
             transCounts[3]++;
+            linkArrays[3].push(links[j]);
         }
         else{
             console.error("Weird category!!!!");
@@ -173,7 +186,41 @@ function drawLegends(){
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
         .text(function(d,i) {
-          return transactions[i] +" ("+transCounts[i]+")";});
+          return transactions[i] +" ("+transCounts[i]+")";})
+        .on("mouseover", function(d,i){
+            var str = " ";
+            for (var j=0; j<linkArrays[i].length;j++){
+                //console.log(i);
+                var id1 = linkArrays[i][j].source.id;
+                if (str.indexOf(id1)<0)
+                    str += id1 +" ";
+                var id2 = linkArrays[i][j].target.id;
+                if (str.indexOf(id2)<0)
+                    str += id2 +" ";
+            }
+            mouseoverIDs(str);
+
+
+           /* var str2 = " ";
+            for (var j=0; j<linkArrays[i].length;j++){
+                //console.log(i);
+                var id1 = linkArrays[i][j].source.id;
+                var id2 = linkArrays[i][j].target.id;
+                if (str2.indexOf(id1+"_"+id2)<0)
+                    str2 += id1+"_"+id2 +" ";
+            }*/
+            // Highlight links of this category
+            svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+                //if (str2.indexOf(l.source.id+"_"+l.target.id)>=0 && l.category==i){
+                if (l.category==i){
+                    return 0.7;
+                }
+                else
+                    return 0.02;
+            });
+
+        })
+        .on("mouseout", mouseoutNode);
 
 
     function removeCategory(cat){
