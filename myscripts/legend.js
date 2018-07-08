@@ -235,11 +235,11 @@ function orderNodesTimeline(){
     nodeSuspicious.forEach(function(d,i) {
         if(i==0){
             d.y = yStart;
-            var previousNodeSize = 23;
+            var previousNodeSize =15;
             d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
             d.followers.forEach(function(d) {
                 if (d.neighbors.length<2)
-                    d.y=yStart -20- xScale(d.listTimes[0])/10;
+                    d.y=yStart - xScale(d.listTimes[0])/10;
                 else {
                     curY = curY + previousNodeSize + getNodeSize(d);
                     previousNodeSize = getNodeSize(d);

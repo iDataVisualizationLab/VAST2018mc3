@@ -240,7 +240,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                  .attr("x2", function(d) {return 1220;})
                  .attr("y2", function(d) {return 100;})
                  .style("stroke-dasharray", ("1, 1"))
-                 .style("stroke-width",1)
+                 .style("stroke-width",0.5)
                  .style("stroke", "#000");
 
 
@@ -291,6 +291,9 @@ function updateLinkDistant() {
     });
 }
 
+function getNodeSize(d) {
+   return  2+ Math.pow((d.degree-1),0.35);
+}
 
 function addLinks(links1) {
     //Create all the line svgs but without locations yet
@@ -300,14 +303,11 @@ function addLinks(links1) {
         .enter().append("path")
         .attr("class", "linkArc")
         .style("stroke", function (d) {return colores_google(d.category);})
-        .style("stroke-opacity", 0.3)
-        .style("stroke-width", function (d) { return 1;});
+        .style("stroke-opacity", 0.4)
+        .style("stroke-width", function (d) { return 2;});
     linkArcs = svg.selectAll(".linkArc");
 }
 
-function getNodeSize(d) {
-   return  2+ Math.pow((d.degree-1),0.35);
-}
 
 function addNodes(nodes1) {
     node = node.data(nodes1, function(d) { return d.id;});
@@ -355,7 +355,8 @@ function mouseoverNodes(nodes_){
 // Mouseover the list of node ids in the string input str
 function mouseoverIDs(str){
     svg.selectAll(".node")
-        .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.02; });
+        .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.02; })
+        .attr("stroke-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.02; });
     svg.selectAll(".nodeText")    
         .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.05; });
     svg.selectAll(".lineNodes")
@@ -372,32 +373,19 @@ function mouseoverIDs(str){
 
 function mouseoutNode() {
     svg.selectAll(".node")
-        .attr("fill-opacity", 1);
+        .attr("fill-opacity", 1)
+        .attr("stroke-opacity", 1);
     svg.selectAll(".nodeText")
         .attr("fill-opacity", 1);
-    svg.selectAll(".linkArc").style("stroke-opacity", 0.3);
+    svg.selectAll(".linkArc").style("stroke-opacity", 0.4);
     svg.selectAll(".lineNodes")
         .attr("stroke-opacity",1);
 }
 
 
 function tick(){
-    /*if (force.alpha()<0.01) {
-        var q = d3.geom.quadtree(nodes),
-            i = 0,
-            n = nodes.length;
-        console.log(q);
-        while (++i < n) q.visit(collide(nodes[i]));
-    }
-
-    nodes.forEach(function(d) {
-     //   d.x += (width/2-d.x)*0.1;
-    });*/
-
-//    console.log(force.alpha());
     nodes[0].x = width/2;
     nodes[0].y = height/2;
-
     node.attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
 
@@ -421,7 +409,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.y - d.source.y,
-        dr = dy;
+        dr = dy*50;
     if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
     else
