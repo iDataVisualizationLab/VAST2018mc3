@@ -13,6 +13,7 @@ var linkArrays = [[], [], [], []];
 var clickCount1 =0;
 
 var clickRelatedCount1 =0;
+var clickAssociated1 =0;
 var clickCategoryCounts =[0,0,0,0];
 
 var colorSuspicious = "#a00";
@@ -98,7 +99,7 @@ function drawLegends(){
         .text("Associated to 1 suspicious"+" ("+nodeAssociated1.length+")")
         .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
         .on("mouseout", mouseoutNode)
-        .on("click", removeRelated);
+        .on("click", toggleAssociated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
         .attr("r", 4 )
@@ -109,9 +110,38 @@ function drawLegends(){
         .attr("stroke-width", 1)
         .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
         .on("mouseout", mouseoutNode)
-        .on("click", removeRelated);    
+        .on("click", toggleAssociated);    
 
         
+
+    function toggleAssociated(){
+        if (clickAssociated1%2==0){
+            nodeCurrent = [];
+            for (var i=0;i<nodeSuspicious.length;i++){
+                nodeCurrent.push(nodeSuspicious[i]);
+            }
+            for (var i=0;i<nodeAssociated2.length;i++){
+                nodeCurrent.push(nodeAssociated2[i]);
+            }
+            linkCurrent = [];
+            var str = " ";
+            for (var i=0; i<nodeCurrent.length;i++) {
+                str += nodeCurrent[i].id+" ";
+            }
+            for (var i=0; i<links.length;i++) {
+                if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
+                    linkCurrent.push(links[i]);
+             }
+            restart(nodeCurrent,linkCurrent);
+        }
+        else {
+            nodeCurrent = nodes;
+            linkCurrent = links;
+            restart(nodes, links);
+        }
+        clickAssociated1++;
+    }
+
 
     function removeRelated(){
         if (clickRelatedCount1%2==0){
@@ -126,6 +156,7 @@ function drawLegends(){
         }
         clickRelatedCount1++;
     }
+
 
     var legendTop2 = 154;
     var scale = d3.scale.linear().domain([-1, 10]).range([legendTop2, legendTop2+180]);

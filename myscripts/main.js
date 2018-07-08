@@ -19,9 +19,9 @@ var svg = d3.select("body").append("svg")
 
 //Set up the force layout
 var force = d3.layout.force()
-    .charge(-25)
+    .charge(-50)
     //.linkDistance(100)
-    .gravity(0.1)
+    .gravity(0.03)
     //.friction(0.5)
    // .linkStrength(0.3)
     .alpha(0.1)
@@ -80,9 +80,13 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
-        d3.csv("data/involved.csv", function (error, data2) {
+        //d3.csv("data/Suspicious.csv", function (error, data2) {
+        
+        //d3.csv("data/involved.csv", function (error, data2) {
+        d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
+           
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var day = Math.round(+d["X4"] / (24 * 3600));
@@ -111,7 +115,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
                 }
                 terms[id1][day].rows.push(d)
-
 
                 var id2 = +d["X3"];
                 if (terms[id2] == undefined) {
@@ -144,8 +147,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 l.category = d["X2"];
                 links.push(l);
             });
+            console.log("Done reading data");
 
-            
             for (var i=0; i< links.length;i++){
                 if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
                     linkSuspicious.push(links[i]);
@@ -177,12 +180,16 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 if (links[i].target.neighbors==undefined){
                     links[i].target.neighbors = [];
                 }
-                if(isContainedChild(links[i].source.neighbors, links[i].target)<0)  // No duplicate elements
+                
+                if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{    
                     links[i].source.neighbors.push(links[i].target);
+                }
                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
                     links[i].target.neighbors.push(links[i].source);
 
             }
+             console.log("Done reading data 2");
+
 
             // Compute Suspicious nodes
             for (var i=0; i< nodes.length;i++){
@@ -204,11 +211,19 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 }
                 return -1;
             }
-
+              console.log("Done reading data 3");
+            /*  
+            nodes =  nodes.filter(function(d){
+                return d.neighbors.length>20;
+            })*/
 
             // Order nodes and links
             nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
             links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
+
+
+              console.log("Done reading data 4");
+
 
             updateLinkDistant();
             xScale.domain([0, maxT]); // Set time domain
@@ -243,8 +258,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                  .style("stroke-width",0.5)
                  .style("stroke", "#000");
 
-
-
+            
             // Add links **************************************************
             svg.selectAll(".linkArc").remove();
             linkArcs = svg.selectAll(".linkArc");
@@ -415,11 +429,11 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.y - d.source.y,
-        dr = dy*50;
-    if (d.source.y<d.target.y )
+        dr = dy;
+ //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
-    else
-        return "M" + xx + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.source.y;
+ //   else
+ //       return "M" + xx + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.source.y;
 }
 
 
