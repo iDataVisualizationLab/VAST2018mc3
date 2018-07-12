@@ -81,7 +81,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             suspicious[d.ID] = d;
         });
         //d3.csv("data/Suspicious.csv", function (error, data2) {
-        
         d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
@@ -290,6 +289,28 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
              });
              }); */
 
+
+            d3.csv("data/Suspicious.csv", function (error, data3) {
+                var str = " ";
+                data3.forEach(function (d) {
+                    str += d["X1"] + " " + d["X3"]+" "+d["X4"] +" ";
+                });
+                
+                svg.selectAll(".linkArc")
+                    .attr("stroke-opacity", function (d) { 
+                        if (str.indexOf(d.id)>=0)
+                            return 0.5;
+                        else
+                            return 0.1;
+                    })
+                    .style("stroke-width", function (d) { 
+                        if (str.indexOf(d.id)>=0)
+                            return 2;
+                        else
+                            return 1;
+                    });
+                //debugger;
+            });    
         });
     });
  });
@@ -317,7 +338,6 @@ function addLinks(links1) {
         .enter().append("path")
         .attr("class", "linkArc")
         .style("stroke", function (d) {return colores_google(d.category);})
-        .style("stroke-opacity", 0.4)
         .style("stroke-width", function (d) { return 1;});
     linkArcs = svg.selectAll(".linkArc");
 }
@@ -344,7 +364,7 @@ function addNodes(nodes1) {
 
 function mouseoverNode(d){
      var list = " ";
-    svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+    svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
         if (l.source.id==d.id || l.target.id==d.id){
             list += l.source.id+" ";
             list += l.target.id+" ";
@@ -381,7 +401,7 @@ function mouseoverIDs(str){
 
 // Mouseover the list of node ids in the string input str
 function mouseoverLinksIDs(str){
-    svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+    svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
          if (str.indexOf(" "+l.source.id+" ")>=0 && str.indexOf(" "+l.target.id+" ")>=0){
              return 0.7;
          }
@@ -397,7 +417,7 @@ function mouseoutNode() {
         .attr("stroke-opacity", 1);
     svg.selectAll(".nodeText")
         .attr("fill-opacity", 1);
-    svg.selectAll(".linkArc").style("stroke-opacity", 0.4);
+    svg.selectAll(".linkArc").attr("stroke-opacity", 0.4);
     svg.selectAll(".lineNodes")
         .attr("stroke-opacity",1);
 }
@@ -429,7 +449,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.y - d.source.y,
-        dr = dy;
+        dr = dy*10;
  //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
  //   else
