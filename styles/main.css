@@ -12,6 +12,14 @@
   top:10px;
 }
 
+#networkPanel{
+  position:absolute;
+  background-color: rgba(240,240,240, 0.95);
+  left:1px;
+  top:450px;
+}
+
+
 #button1{
   position:absolute;
   left:14px;
@@ -44,6 +52,8 @@
 .node:hover text {
   display: inline;
 }
+
+<!-- WebCola ------ -->
 
 
 
@@ -89,6 +99,9 @@ h3 {
 }
 
 
+body {
+    font: 12px sans-serif;
+}
 
 .axis path,
 .axis line,
@@ -100,16 +113,14 @@ h3 {
 }
 
 .x.axis path, .x.axis1 path {
-   stroke: #000;
+  stroke: #000;
 }
 
 .axis {
-  font: 5 sans-serif;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
-
 
 .axis .domain {
   fill: none;

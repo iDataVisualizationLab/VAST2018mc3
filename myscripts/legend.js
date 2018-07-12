@@ -21,7 +21,8 @@ var color1 = "#777";
 var color2 = "#000";
 
 var durationTime =2000;
-
+var yStart = 100;
+    
 function colores_google(n) {
     var colores_g = ["#3060aa", "#660099", "#996600", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     return colores_g[n % colores_g.length];
@@ -31,9 +32,27 @@ function drawLegends(){
     var svgLegend = d3.select("#controlPanel")
         .append("svg")
         .attr("width", 220)
-        .attr("height",800);
+        .attr("height",400);
 
     var legendTop1 = 70;
+    svgLegend.append("text")
+        .attr("class","textTitle11111")
+        .attr("x", 8 )
+        .attr("y", legendTop1)
+        .attr("fill", "#000" )
+        .attr("font-family", "sans-serif")
+        .attr("font-size",12)
+        .style("font-weight", "bold")
+        .text("");                     // DUmmy, not sure why
+    svgLegend.append("line")
+        .attr("class","lineLegend22222")
+        .attr("x1", 7 )
+        .attr("y1", 0 )
+        .attr("x2", 124 )
+        .attr("y2", 0 )
+        .attr("stroke-width",1.5);    
+
+
     svgLegend.append("text")
         .attr("class","textTitle1")
         .attr("x", 8 )
@@ -241,7 +260,7 @@ function drawLegends(){
                     str2 += id1+"_"+id2 +" ";
             }*/
             // Highlight links of this category
-            svg.selectAll(".linkArc").style("stroke-opacity", function(l){
+            svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
                 //if (str2.indexOf(l.source.id+"_"+l.target.id)>=0 && l.category==i){
                 if (l.category==i){
                     return 0.7;
@@ -302,14 +321,12 @@ function orderNodesTimeline(){
     // Stop force layout first
     force.stop();
 
-
     nodes.forEach(function(d) {
         d.x=xScale(d.listTimes[0]);
         d.y =0;
     });
     nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
 
-    var yStart = height/5;
     var curY =yStart;
     nodeSuspicious.forEach(function(d,i) {
         if(i==0){
@@ -319,18 +336,14 @@ function orderNodesTimeline(){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 d.followers.forEach(function(d) {
                     if (d.neighbors.length<2)
-                        d.y=yStart - xScale(d.listTimes[0])/10;
+                        d.y=yStart - xScaleGlobal(d.listTimes[0])/10;
                     else {
                         curY = curY + previousNodeSize + getNodeSize(d);
                         previousNodeSize = getNodeSize(d);
                         d.y=curY;
                     }
                 });
-<<<<<<< HEAD
-            }   
-=======
             }
->>>>>>> 958ca5c9b05b60caf5fa56475ac182ae49d3ea31
         }
         else{
             if (d.neighbors.length==1)  // Suspious with single neighbor
@@ -373,35 +386,6 @@ function orderNodesTimeline(){
         .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);;})
         .attr("y2", function(d) {return d.y;})
 
-    svg.selectAll(".nodeText").remove();
-    svg.selectAll(".nodeText")
-        .data(nodeHighNeighbor).enter().append("text")
-        .attr("class", "nodeText")
-        .text(function(d) {
-            if (suspicious[d.id]!=undefined)
-                return suspicious[d.id].first +" "+suspicious[d.id].last;
-            else
-                return people[d.id].first +" "+people[d.id].last;
-        })
-        .attr("dy", "4px")
-        .style("fill", function(d){
-            if (suspicious[d.id])
-                return colorSuspicious;
-            else
-                return "#333";
-        })
-        .style("text-anchor","end")
-        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
-        //.style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", function(d) {
-            if (suspicious[d.id]!=undefined)
-                return 13;
-            else
-                return 5+getNodeSize(d);
-        })
-        .on("mouseover", mouseoverNode)
-        .on("mouseout", mouseoutNode);
     svg.selectAll(".nodeText").transition().duration(durationTime)
         .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
         .attr("y", function(d) {return d.y;})
@@ -410,45 +394,40 @@ function orderNodesTimeline(){
 
 
 
-function detactTimeSeries(){
-    // Stop force layout first
-    force.stop();
+function sortDownstream(nodes_,links_,typeWeights){
+    nodes_.forEach(function(d,i) {
+        d.score = 0;
+    })
 
-    var array = [];
-    for (var i=0; i< nodes.length; i++) {
-        var e =  {};
-        e.y = nodes[i].y;
-        e.nodeId = i;
-        array.push(e);
-    }
-    array.sort(function (a, b) {
-        if (a.y > b.y) {
-            return 1;
-        }
-        if (a.y < b.y) {
-            return -1;
-        }
-        return 0;
-    });
-
-    var step = height/array.length;
-    for (var i=0; i< array.length; i++) {
-        nodes[array[i].nodeId].y = i*step;
-    }
-    force.stop();
-
-    updateTransition(2000, height-4);
-}
-
-function updateTransition(durationTime, timeY){  // timeY is the position of time legend
-    nodes.forEach(function(d) {
-        d.x=xScale(d.listTimes[0]);
-    });
-
+    links_.forEach(function(l,i) {
+        var type = +l.category;
+        var node1 = l.source;
+        node1.score += typeWeights[type];
+        var node2 = l.target;
+        node2.score -= typeWeights[type];
+    })    
+    nodes_ = nodes_.sort(function (a, b) { return (a.score > b.score) ? -1 : 1;});
+    nodes_.forEach(function(d,i) {
+        d.y = yStart+20*i;
+    })   
+   
     node.transition().duration(durationTime)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; });
-
     linkArcs.transition().duration(durationTime).attr("d", linkArc2);
+
+    svg.selectAll(".lineNodes").transition().duration(durationTime)
+        .attr("x1", function(d) {return d.x;})
+        .attr("y1", function(d) {return d.y;})
+        .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);;})
+        .attr("y2", function(d) {return d.y;})
+
+    svg.selectAll(".nodeText").transition().duration(durationTime)
+        .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
+        .attr("y", function(d) {return d.y;})
+        .text(function(d) { 
+               return people[d.id].first +" "+people[d.id].last +" ("+d.score+")";
+        })
 }
+
 
