@@ -80,9 +80,9 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
-        //d3.csv("data/Suspicious.csv", function (error, data2) {
+        d3.csv("data/Suspicious.csv", function (error, data2) {
         
-        d3.csv("data/involved.csv", function (error, data2) {
+      //  d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
