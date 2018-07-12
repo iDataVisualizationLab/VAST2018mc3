@@ -41,6 +41,9 @@ var terms = new Object();
 
 var xStep = 290;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
+var xScaleTime = d3.time.scale().range([xStep+20, (width-100)]);
+var xScaleTime2 =d3.time.scale().range([xStep+20, (width-100)]);
+
 var yScale;
 var searchTerm ="";
 var optArray = [];   // FOR search box
@@ -80,18 +83,18 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
-        d3.csv("data/Suspicious.csv", function (error, data2) {
+      //  d3.csv("data/Suspicious.csv", function (error, data2) {
         
-      //  d3.csv("data/involved.csv", function (error, data2) {
+        d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
            
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
-                var day = Math.round(+d["X4"] / (24 * 3600));
-                minT = Math.min(minT, day);
-                maxT = Math.max(maxT, day);
+                var time = +d["X4"];
+                minT = Math.min(minT, time);
+                maxT = Math.max(maxT, time);
 
                 var id1 = +d["X1"];
                 if (terms[id1] == undefined) {
@@ -99,22 +102,15 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     terms[id1].degree = 1;
                     terms[id1].id = id1;
                     terms[id1].listTimes = [];
-                    terms[id1].listTimes.push(day);
+                    terms[id1].listTimes.push(time);
                     nodes.push(terms[id1]);
                 }
                 else {
                     terms[id1].degree++;
-                    terms[id1].listTimes.push(day);
+                    terms[id1].listTimes.push(time);
                 }
 
 
-                if (terms[id1][day] == undefined) {
-                    terms[id1][day] = {};
-                    terms[id1][day].id = id1;
-                    terms[id1][day].rows = [];
-
-                }
-                terms[id1][day].rows.push(d)
 
                 var id2 = +d["X3"];
                 if (terms[id2] == undefined) {
@@ -122,27 +118,19 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     terms[id2].degree = 1;
                     terms[id2].id = id2;
                     terms[id2].listTimes = [];
-                    terms[id2].listTimes.push(day);
+                    terms[id2].listTimes.push(time);
                     nodes.push(terms[id2]);
                 }
                 else {
                     terms[id2].degree++;
-                    terms[id2].listTimes.push(day);
+                    terms[id2].listTimes.push(time);
                 }
 
-
-                if (terms[id2][day] == undefined) {
-                    terms[id2][day] = {};
-                    terms[id2][day].id = id2;
-                    terms[id2][day].rows = [];
-
-                }
-                terms[id2][day].rows.push(d)
 
                 var l = new Object();
                 l.source = terms[id1];
                 l.target = terms[id2];
-                l.time = day;
+                l.time = time;
                 l.id = l.source.id + " " + l.target.id+" "+d["X4"];
                 l.category = d["X2"];
                 links.push(l);
@@ -290,6 +278,82 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
              });
              }); */
 
+
+            var minDate = new Date (new Date("May 11, 2015 14:00").getTime() +minT*1000);
+            var maxDate = new Date (new Date("May 11, 2015 14:00").getTime() +maxT*1000);
+
+
+            var xAxis = d3.svg.axis()
+                    .scale(xScaleTime)
+                    .orient("bottom");
+            var xAxis2 = d3.svg.axis() // xAxis for brush slider
+                .scale(xScaleTime2)
+                .orient("bottom");
+
+            var height2 = 100;
+
+            xScaleTime.domain([minDate,maxDate]); // extent = highest and lowest points, domain is data, range is bouding box
+            xScaleTime2.domain([minDate,maxDate]); // Setting a duplicate xdomain for brushing reference later
+            // draw line graph
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (height-150) + ")")
+                .call(xAxis);
+
+
+            //for slider part-----------------------------------------------------------------------------------
+            var context = svg.append("g") // Brushing context box container
+                .attr("transform", "translate(" + 0 + "," + (height-150) + ")")
+                .attr("class", "context");
+
+            //for slider part-----------------------------------------------------------------------------------
+            var brush = d3.svg.brush()//for slider bar at the bottom
+                .x(xScaleTime2)
+                .on("brush", brushed);
+
+            context.append("g") // Create brushing xAxis
+                .attr("class", "x axis1")
+                .attr("transform", "translate(0," + height2 + ")")
+                .call(xAxis2);
+
+            var contextArea = d3.svg.area() // Set attributes for area chart in brushing context graph
+                .interpolate("monotone")
+                .x(function(d) { return xScaleTime2(d.date); }) // x is scaled to xScale2
+                .y0(height2) // Bottom line begins at height2 (area chart not inverted)
+                .y1(0); // Top line of area, 0 (area chart not inverted)
+
+            //plot the rect as the bar at the bottom
+            //context.append("path") // Path is created using svg.area details
+            //    .attr("class", "area")
+            //    .attr("d", contextArea(categories[0].values)) // pass first categories data .values to area path generator
+            //    .attr("fill", "#F1F1F2");
+
+            //append the brush for the selection of subsection
+            context.append("g")
+                .attr("class", "x brush")
+                .call(brush)
+                .selectAll("rect")
+                .attr("height", height2) // Make brush rects same height
+                .attr("fill", "#E6E7E8");
+            //end slider part-----------------------------------------------------------------------------------
+
+
+            //for brusher of the slider bar at the bottom
+            function brushed() {
+
+                xScaleTime.domain(brush.empty() ? xScaleTime2.domain() : brush.extent()); // If brush is empty then reset the Xscale domain to default, if not then make it the brush extent
+
+                svg.select(".x.axis") // replot xAxis with transition when brush used
+                    .transition()
+                    .call(xAxis);
+
+              /*  issue.select("path") // Redraw lines based on brush xAxis scale and domain
+                    .transition()
+                    .attr("d", function(d){
+                        return d.visible ? line(d.values) : null; // If d.visible is true then draw line for this d selection
+                    });
+                */
+            };
         });
     });
  });

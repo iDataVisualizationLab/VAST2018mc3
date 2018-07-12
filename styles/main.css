@@ -48,28 +48,6 @@
 
 
 <!-- For the slider -->
-.axis {
-  font: 5 sans-serif;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-
-
-.axis .domain {
-  fill: none;
-  stroke: #000;
-  stroke-opacity: .25;
-  stroke-width: 5px;
-  stroke-linecap: round;
-}
-
-.axis .halo {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 3px;
-  stroke-linecap: round;
-}
 
 .slider .handle {
   fill: #666;
@@ -110,3 +88,40 @@ h3 {
   text-align: center;
 }
 
+
+
+.axis path,
+.axis line,
+.axis1 path,
+.axis1 line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path, .x.axis1 path {
+   stroke: #000;
+}
+
+.axis {
+  font: 5 sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+
+.axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1px;
+  stroke-linecap: round;
+}
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 3px;
+  stroke-linecap: round;
+}

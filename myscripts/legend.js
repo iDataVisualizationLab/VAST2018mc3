@@ -302,6 +302,7 @@ function orderNodesTimeline(){
     // Stop force layout first
     force.stop();
 
+
     nodes.forEach(function(d) {
         d.x=xScale(d.listTimes[0]);
         d.y =0;
