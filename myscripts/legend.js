@@ -302,6 +302,7 @@ function orderNodesTimeline(){
     // Stop force layout first
     force.stop();
 
+
     nodes.forEach(function(d) {
         d.x=xScale(d.listTimes[0]);
         d.y =0;
@@ -325,7 +326,11 @@ function orderNodesTimeline(){
                         d.y=curY;
                     }
                 });
+<<<<<<< HEAD
             }   
+=======
+            }
+>>>>>>> 958ca5c9b05b60caf5fa56475ac182ae49d3ea31
         }
         else{
             if (d.neighbors.length==1)  // Suspious with single neighbor
