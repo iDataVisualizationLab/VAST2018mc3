@@ -32,7 +32,7 @@ var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 
 var terms = new Object();
 
-var xStep = 290;
+var xStep = 600;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-100)]);
 var xScaleTime = d3.time.scale().range([xStep+20, (width-100)]);
@@ -78,8 +78,12 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             suspicious[d.ID] = d;
         });
        //     d3.csv("data/Suspicious.csv", function (error, data2) {        
-        d3.csv("data/involved.csv", function (error, data2) {
-       // d3.csv("data/purchases.csv", function (error, data2) {      
+       // d3.csv("data/involved.csv", function (error, data2) {
+
+       // d3.csv("data2/groupCalls.csv", function (error, data2) {      
+       // d3.csv("data2/groupPurchases.csv", function (error, data2) {      
+       //   d3.csv("data2/groupMeeting.csv", function (error, data2) {      
+            d3.csv("data2/groupEmails.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
            
@@ -403,8 +407,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
                     linkCurrent.push(links[i]);
             }
-            //colaNetwork(nodeCurrent, linkCurrent);
-            colaNetwork(nodeSuspicious, linkSuspicious)
+            colaNetwork(nodeCurrent, linkCurrent);
+           // colaNetwork(nodeSuspicious, linkSuspicious)
 
 
 
