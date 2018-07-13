@@ -12,17 +12,19 @@ var linkArrays = [[], [], [], []];
 
 var clickCount1 =0;
 
-var clickRelatedCount1 =0;
-var clickAssociated1 =0;
+var showAssociated2 = true;
+var showAssociated1 = false;
 var clickCategoryCounts =[0,0,0,0];
 
-var colorSuspicious = "#a00";
+var colorSuspicious = "#900";
 var color1 = "#777";
 var color2 = "#000";
 
 var durationTime =2000;
-var yStart = 100;
-    
+var yStart = 200;
+
+var arcOpacity = 0.4;
+
 function colores_google(n) {
     var colores_g = ["#3060aa", "#660099", "#996600", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     return colores_g[n % colores_g.length];
@@ -36,24 +38,6 @@ function drawLegends(){
 
     var legendTop1 = 70;
     svgLegend.append("text")
-        .attr("class","textTitle11111")
-        .attr("x", 8 )
-        .attr("y", legendTop1)
-        .attr("fill", "#000" )
-        .attr("font-family", "sans-serif")
-        .attr("font-size",12)
-        .style("font-weight", "bold")
-        .text("");                     // DUmmy, not sure why
-    svgLegend.append("line")
-        .attr("class","lineLegend22222")
-        .attr("x1", 7 )
-        .attr("y1", 0 )
-        .attr("x2", 124 )
-        .attr("y2", 0 )
-        .attr("stroke-width",1.5);    
-
-
-    svgLegend.append("text")
         .attr("class","textTitle1")
         .attr("x", 8 )
         .attr("y", legendTop1)
@@ -64,49 +48,81 @@ function drawLegends(){
         .text("Nodes (or people)");
 
     svgLegend.append("text")
-        .attr("class","textLegend1")
+        .attr("class","textLegend0")
         .attr("x", 25 )
         .attr("y", legendTop1+19)
         .attr("fill", colorSuspicious )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
-        .on("mouseover", function(d){ mouseoverNodes(nodeSuspicious);})
-        .on("mouseout", mouseoutNode)
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend0")
+                .attr("stroke", "#000" );
+            mouseoverNodes(nodeSuspicious);
+        })
+        .on("mouseout", function(){
+            svgLegend.selectAll(".circleLegend0")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        })
         .text("Suspicious"+" ("+nodeSuspicious.length+")");
     svgLegend.append("circle")
-        .attr("class","circleLegend1")
+        .attr("class","circleLegend0")
         .attr("r", 6 )
         .attr("cx", 15 )
         .attr("cy", legendTop1+14)
         .attr("fill", colorSuspicious )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
-        .on("mouseover", function(d){ mouseoverNodes(nodeSuspicious);})
-        .on("mouseout", mouseoutNode);
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend0")
+                .attr("stroke", "#000" );
+            mouseoverNodes(nodeSuspicious);
+        })
+        .on("mouseout", function(){
+            svgLegend.selectAll(".circleLegend0")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        });
     
 
     svgLegend.append("text")
-        .attr("class","textLegend1")
+        .attr("class","textLegend2")
         .attr("x", 25 )
         .attr("y", legendTop1+36)
         .attr("fill", color2 )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
         .text("Associated to many suspicious"+" ("+nodeAssociated2.length+")")
-        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated2);})
-        .on("mouseout", mouseoutNode)
-        .on("click", removeRelated);
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend2")
+                .attr("stroke", "#777" );
+            //mouseoverNodes(nodeAssociated2);
+        })
+        .on("mouseout", function(){
+            svgLegend.selectAll(".circleLegend2")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        })
+        .on("click", toggleAssociated2);
     svgLegend.append("circle")
-        .attr("class","circleLegend1")
+        .attr("class","circleLegend2")
         .attr("r", 4 )
         .attr("cx", 15 )
         .attr("cy", legendTop1+31)
         .attr("fill", color2 )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
-        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated2);})
-        .on("mouseout", mouseoutNode)
-        .on("click", removeRelated);
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend2")
+                .attr("stroke", "#777" );
+           // mouseoverNodes(nodeAssociated2);
+        })
+        .on("mouseout", function(){
+            svgLegend.selectAll(".circleLegend2")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        })
+        .on("click", toggleAssociated2);
 
     svgLegend.append("text")
         .attr("class","textLegend1")
@@ -116,8 +132,16 @@ function drawLegends(){
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
         .text("Associated to 1 suspicious"+" ("+nodeAssociated1.length+")")
-        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
-        .on("mouseout", mouseoutNode)
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend1")
+                .attr("stroke", "#777" );
+            //mouseoverNodes(nodeAssociated1);
+        })
+        .on("mouseout", function (){
+            svgLegend.selectAll(".circleLegend1")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        })
         .on("click", toggleAssociated);
     svgLegend.append("circle")
         .attr("class","circleLegend1")
@@ -127,14 +151,26 @@ function drawLegends(){
         .attr("fill", color1 )
         .attr("stroke", "#fff" )
         .attr("stroke-width", 1)
-        .on("mouseover", function(d){ mouseoverNodes(nodeAssociated1);})
-        .on("mouseout", mouseoutNode)
+        .on("mouseover", function(d){
+            svgLegend.selectAll(".circleLegend1")
+                .attr("stroke", "#000" );
+            //mouseoverNodes(nodeAssociated1);
+        })
+        .on("mouseout", function (){
+            svgLegend.selectAll(".circleLegend1")
+                .attr("stroke", "#fff" );
+            mouseoutNode();
+        })
         .on("click", toggleAssociated);    
 
         
 
     function toggleAssociated(){
-        if (clickAssociated1%2==0){
+        if (showAssociated1){
+            nodeCurrent = nodes;
+            linkCurrent = links;
+        }
+        else {
             nodeCurrent = [];
             for (var i=0;i<nodeSuspicious.length;i++){
                 nodeCurrent.push(nodeSuspicious[i]);
@@ -150,30 +186,43 @@ function drawLegends(){
             for (var i=0; i<links.length;i++) {
                 if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
                     linkCurrent.push(links[i]);
-             }
-            restart(nodeCurrent,linkCurrent);
+            }
+        //    colaNetwork(nodeCurrent, linkCurrent)
         }
-        else {
-            nodeCurrent = nodes;
-            linkCurrent = links;
-            restart(nodes, links);
-        }
-        clickAssociated1++;
+        showAssociated1 = !showAssociated1;
+        orderNodesTimeline();
+        mouseoutNode();
     }
 
 
-    function removeRelated(){
-        if (clickRelatedCount1%2==0){
+    function toggleAssociated2(){
+        if (showAssociated2){
             nodeCurrent = nodeSuspicious;
             linkCurrent = linkSuspicious;
-            restart(nodeSuspicious,linkSuspicious);
+            colaNetwork(nodeCurrent, linkCurrent);
         }
         else {
-            nodeCurrent = nodes;
-            linkCurrent = links;
-            restart(nodes, links);
+            nodeCurrent = [];
+            for (var i=0;i<nodeSuspicious.length;i++){
+                nodeCurrent.push(nodeSuspicious[i]);
+            }
+            for (var i=0;i<nodeAssociated2.length;i++){
+                nodeCurrent.push(nodeAssociated2[i]);
+            }
+            linkCurrent = [];
+            var str = " ";
+            for (var i=0; i<nodeCurrent.length;i++) {
+                str += nodeCurrent[i].id+" ";
+            }
+            for (var i=0; i<links.length;i++) {
+                if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
+                    linkCurrent.push(links[i]);
+            }
+            colaNetwork(nodeCurrent, linkCurrent);
         }
-        clickRelatedCount1++;
+        showAssociated2 = !showAssociated2;
+        orderNodesTimeline();
+        mouseoutNode();
     }
 
 
@@ -223,13 +272,15 @@ function drawLegends(){
         }
     }
 
-    svgLegend.selectAll(".textLegend2")
+    svgLegend.selectAll(".textLegend22")
         .data(d3.range(4) )
         .enter()
         .append("text")
-        .attr("class","textLegend2")
+        .attr("class","textLegend22")
         .attr("x", 28 )
-        .attr("y", scale )
+        .attr("y", function (d) {
+            return scale (d);
+        } )
         .attr("dy", 5 )
         .attr("fill", function(d,i) { return colores_google(i); } )
         .on("click", function(d,i) { removeCategory(i) ;})
@@ -250,7 +301,6 @@ function drawLegends(){
             }
             mouseoverIDs(str);
 
-
            /* var str2 = " ";
             for (var j=0; j<linkArrays[i].length;j++){
                 //console.log(i);
@@ -261,13 +311,54 @@ function drawLegends(){
             }*/
             // Highlight links of this category
             svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
-                //if (str2.indexOf(l.source.id+"_"+l.target.id)>=0 && l.category==i){
-                if (l.category==i){
+                 if (l.category==i){
                     return 0.7;
                 }
                 else
                     return 0.02;
             });
+            checkVisibility();
+
+            // Cola network
+
+            var nodes2 = [];
+            for (var i2=0;i2<nodeSuspicious.length;i2++){
+                nodes2.push(nodeSuspicious[i2]);
+            }
+            for (var i2=0;i2<nodeAssociated2.length;i2++){
+                nodes2.push(nodeAssociated2[i2]);
+            }
+            var links2= [];
+            var str = " ";
+            for (var i2=0; i2<nodes2.length;i2++) {
+                str += nodes2[i2].id+" ";
+            }
+            for (var i2=2; i2<links.length;i2++) {
+                if (str.indexOf(" "+links[i2].source.id+" ")>=0 && str.indexOf(" "+links[i2].target.id+" ")>=0)
+                    links2.push(links[i2]);
+            }
+
+            var str2 = " ";
+            var links4 =[];
+            for (var j=0; j<links2.length;j++) {
+                var node1 = links2[j].source;
+                var node2 = links2[j].target;
+                if (links2[j].category==i) {
+                    if (str2.indexOf(node1.id+" ") < 0)
+                        str2 += node1.id + " ";
+                    if (str2.indexOf(node2.id+" ") < 0)
+                        str2 += node2.id + " ";
+                    links4.push(links2[j])
+                }
+            }
+            var nodes4 =[];
+            for (var i=0;i<nodes.length;i++){
+                if (str2.indexOf(nodes[i].id)>=0)
+                    nodes4.push(nodes[i]);
+            }
+
+            colaNetwork(nodes4, links4);
+
 
         })
         .on("mouseout", mouseoutNode);
@@ -286,9 +377,7 @@ function drawLegends(){
             }
         }
         nodeCurrent = nodes;
-        restart(nodeCurrent, linkCurrent);
-
-
+        //restart(nodeCurrent, linkCurrent);
     }
 }
 
@@ -310,7 +399,7 @@ function buttonClick1(){
         orderNodesTimeline();
     }
     else{
-        force.resume();
+
     }
     clickCount1++;
 }
@@ -318,9 +407,6 @@ function buttonClick1(){
 
 
 function orderNodesTimeline(){
-    // Stop force layout first
-    force.stop();
-
     nodes.forEach(function(d) {
         d.x=xScale(d.listTimes[0]);
         d.y =0;
@@ -335,12 +421,15 @@ function orderNodesTimeline(){
             if (d.followers){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 d.followers.forEach(function(d) {
-                    if (d.neighbors.length<2)
+                    if (d.neighbors.length<2) {
                         d.y=yStart - xScaleGlobal(d.listTimes[0])/10;
+                    }
                     else {
-                        curY = curY + previousNodeSize + getNodeSize(d);
-                        previousNodeSize = getNodeSize(d);
-                        d.y=curY;
+                        if (showAssociated2) {
+                            curY = curY + previousNodeSize + getNodeSize(d);
+                            previousNodeSize = getNodeSize(d);
+                            d.y = curY;
+                        }
                     }
                 });
             }
@@ -349,25 +438,29 @@ function orderNodesTimeline(){
             if (d.neighbors.length==1)  // Suspious with single neighbor
                 d.y=d.neighbors[0].y+13;
             else
-                d.y=curY+10;
+                d.y=curY+13;
             curY = d.y;
             if (d.followers){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 var previousNode = d;
                 d.followers.forEach(function(d2,j) {
                     if (d2.y <=0){// Make sure that we don't not reset y of follower of multiple suspicious nodes
-                        if (d2.neighbors.length<2){
-                            if (previousNode.neighbors.length<2)
-                                curY+=0.2;
-                            else
-                                curY+=getNodeSize(previousNode)+getNodeSize(d2);
-                            previousNode =d2;
-                            d2.y=curY;
+                        if (d2.neighbors.length<2) {
+                            if (showAssociated1) {
+                                if (previousNode.neighbors.length < 2)
+                                    curY += 0.2;
+                                else
+                                    curY += getNodeSize(previousNode) + getNodeSize(d2);
+                                previousNode = d2;
+                                d2.y = curY;
+                            }
                         }
                         else{
-                            curY = curY + getNodeSize(previousNode) + getNodeSize(d2);
-                            previousNode = d2;
-                            d2.y=curY;
+                            if (showAssociated2) {
+                                curY = curY + getNodeSize(previousNode) + getNodeSize(d2);
+                                previousNode = d2;
+                                d2.y = curY;
+                            }
                         }
                     }
                 });
@@ -375,9 +468,6 @@ function orderNodesTimeline(){
         }
     });
 
-    node.transition().duration(durationTime)
-        .attr('cx', function(d) { return d.x; })
-        .attr('cy', function(d) { return d.y; });
     linkArcs.transition().duration(durationTime).attr("d", linkArc2);
 
     svg.selectAll(".lineNodes").transition().duration(durationTime)
@@ -390,10 +480,62 @@ function orderNodesTimeline(){
         .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
         .attr("y", function(d) {return d.y;})
 
+    svg.selectAll(".node").transition().duration(durationTime)
+        .attr("cx", function(d) {return d.x;})
+        .attr("cy", function(d) {return d.y;})
+
+    checkVisibility();
+}
+
+function checkVisibility(){
+    // Check if we should remove the showAssociated1
+    if (!showAssociated1){
+        var str = " ";
+        for (var j=0; j<nodes.length;j++){
+            if (nodes[j].neighbors.length>1)
+                str += nodes[j].id +" ";
+        }
+        svg.selectAll(".node")
+            .attr("fill-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("fill-opacity") : 0; })
+            .attr("stroke-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("stroke-opacity") : 0; });
+        svg.selectAll(".nodeText")
+            .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("fill-opacity") : 0; });
+        svg.selectAll(".lineNodes")
+            .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("stroke-opacity") : 0; });
+
+        svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
+            if (str.indexOf(" "+l.source.id+" ")>=0 && str.indexOf(" "+l.target.id+" ")>=0){
+                return d3.select(this).attr("stroke-opacity");
+            }
+            else
+                return 0;
+        });
+    }
+    if (!showAssociated2){
+        var str = " ";
+        for (var j=0; j<nodeSuspicious.length;j++){
+                str += nodeSuspicious[j].id +" ";
+        }
+        svg.selectAll(".node")
+            .attr("fill-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("fill-opacity") : 0; })
+            .attr("stroke-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("stroke-opacity") : 0; });
+        svg.selectAll(".nodeText")
+            .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("fill-opacity") : 0; });
+        svg.selectAll(".lineNodes")
+            .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? d3.select(this).attr("stroke-opacity") : 0; });
+
+        svg.selectAll(".linkArc").attr("stroke-opacity", function(l){
+            if (str.indexOf(" "+l.source.id+" ")>=0 && str.indexOf(" "+l.target.id+" ")>=0){
+                return d3.select(this).attr("stroke-opacity");
+            }
+            else
+                return 0;
+        });
+    }
 }
 
 
-
+/*
 function sortDownstream(nodes_,links_,typeWeights){
     nodes_.forEach(function(d,i) {
         d.score = 0;
@@ -428,6 +570,6 @@ function sortDownstream(nodes_,links_,typeWeights){
         .text(function(d) { 
                return people[d.id].first +" "+people[d.id].last +" ("+d.score+")";
         })
-}
+}*/
 
 

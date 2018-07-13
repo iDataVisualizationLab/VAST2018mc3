@@ -7,16 +7,17 @@
 
 #controlPanel{
   position:absolute;
-  background-color: rgba(200,200,200, 0.95);
+  background-color: rgba(220,220,220, 0.95);
   left:1px;
   top:10px;
 }
 
 #networkPanel{
   position:absolute;
-  background-color: rgba(240,240,240, 0.95);
+  background-color: rgba(245,245,245, 0.95);
+  border-radius: 250px;
   left:1px;
-  top:450px;
+  top:550px;
 }
 
 
@@ -24,7 +25,7 @@
   position:absolute;
   left:14px;
   top:5px;
-  order: 1px solid rgba(0,0,0, 1);
+  border: 1px solid rgba(0,0,0, 1);
   background-color: rgba(255,255,255, 1);
   border-radius: 1px;
   box-shadow: 1px 1px 1px #444;

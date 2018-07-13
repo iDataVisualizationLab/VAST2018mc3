@@ -17,20 +17,13 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-//Set up the force layout
-var force = d3.layout.force()
-    .charge(-50)
-    //.linkDistance(100)
-    .gravity(0.03)
-    //.friction(0.5)
-   // .linkStrength(0.3)
-    .alpha(0.1)
-    .size([width, height]);
 
 var data;
 var node,linkArcs;
 var nodes =[], links =[];
 var nodeSuspicious =[], linkSuspicious =[];
+var nodeSuspicious2 =[], linkSuspicious2 =[];
+
 var nodeCurrent =[], linkCurrent =[];
 var nodeAssociated1 =[], nodeAssociated2 =[], linkeAssociated =[];
 
@@ -208,16 +201,11 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
 
 
-              console.log("Done reading data 4");
 
 
-            updateLinkDistant();
             xScale.domain([0, maxT]); // Set time domain
             xScaleGlobal.domain([0, maxT]); // Set time domain
 
-            force.nodes(nodes)
-                .links(links)
-                .start(100, 150, 200);
 
             nodes.forEach(function(d) {
                 d.listTimes.sort(function (a, b) { return (a > b) ? 1 : -1;});  // Sort list of time *******
@@ -253,25 +241,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             svg.selectAll(".node").remove();
             node = svg.selectAll(".node");
             addNodes(nodes)
-
-
-            force.on("tick", function () {
-                tick();
-            });
-
-            /*
-            var links2 = links.filter(function(d){
-                return d.category==2;
-            })
-            var n1= nodes.filter(function(d){
-                return d.id== 1847246;
-            })
-            var n2= nodes.filter(function(d){
-                return d.id== 2038003;
-            })
-
-            debugger;*/
-
 
             // Add node text **************************
             svg.selectAll(".nodeText").remove();
@@ -339,12 +308,35 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                         else
                             return 1;
                     });
-                    d3.select(".gr__127_0_0_1").style("opacity",1);
+
+                /*
+                for (var i=0; i<links.length;i++) {
+                    if (str.indexOf(links[i].id)>=0)
+                        linkSuspicious2.push(links[i]);
+                }
+                var str2 = " ";
+                for (var i=0; i<linkSuspicious2.length;i++) {
+                    var node1 = linkSuspicious2[i].source;
+                    if (str2.indexOf(node1.id)<0)
+                        str2 += node1.id+" ";
+                    var node2 = linkSuspicious2[i].target;
+                    if (str2.indexOf(node2.id)<0)
+                        str2 += node2.id+" ";
+                }
+                for (var i=0;i<nodes.length;i++){
+                    if (str2.indexOf(nodes[i].id)>=0)
+                        nodeSuspicious2.push(nodes[i]);
+                }*/
+               // colaNetwork(nodeSuspicious2, linkSuspicious2);
+
+
+
+                //    d3.select(".gr__127_0_0_1").style("opacity",1);
+                checkVisibility();
             });    
 
             var minDate = new Date (new Date("May 11, 2015 14:00").getTime() +minT*1000);
             var maxDate = new Date (new Date("May 11, 2015 14:00").getTime() +maxT*1000);
-
 
             var xAxis = d3.svg.axis()
                     .scale(xScaleTime)
@@ -394,12 +386,31 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 .attr("height", height2-25) // Make brush rects same height
                 .attr("fill", "#E6E7E8");
             //end slider part-----------------------------------------------------------------------------------
-           
+
+            nodeCurrent = [];
+            for (var i=0;i<nodeSuspicious.length;i++){
+                nodeCurrent.push(nodeSuspicious[i]);
+            }
+            for (var i=0;i<nodeAssociated2.length;i++){
+                nodeCurrent.push(nodeAssociated2[i]);
+            }
+            linkCurrent = [];
+            var str = " ";
+            for (var i=0; i<nodeCurrent.length;i++) {
+                str += nodeCurrent[i].id+" ";
+            }
+            for (var i=0; i<links.length;i++) {
+                if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
+                    linkCurrent.push(links[i]);
+            }
+            //colaNetwork(nodeCurrent, linkCurrent);
             colaNetwork(nodeSuspicious, linkSuspicious)
+
+
+
             //for brusher of the slider bar at the bottom
             function brushed() {
                 xScaleTime.domain(brush.empty() ? xScaleTime2.domain() : brush.extent()); // If brush is empty then reset the Xscale domain to default, if not then make it the brush extent
-
                 var d1 = (xScaleTime.domain()[0].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 var d2 = (xScaleTime.domain()[1].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 xScale.domain([d1,d2]);
@@ -414,16 +425,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
     });
  });
 
-function updateLinkDistant() {
-    force.linkDistance(function (l,i) {
-        if (l.betweenSuspicious==true) {
-            return 200;
-        }
-        else{
-            return 50;
-        }
-    });
-}
 
 function getNodeSize(d) {
    return  2+ Math.pow((d.degree-1),0.35);
@@ -455,7 +456,6 @@ function addNodes(nodes1) {
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
         .attr("stroke-width", 0.5)
-        .call(force.drag)
         .on("mouseover", mouseoverNode)
         .on("mouseout", mouseoutNode);
     node = svg.selectAll(".node");
@@ -496,6 +496,7 @@ function mouseoverIDs(str){
         .attr("fill-opacity", function(d2){  return (str.indexOf(d2.id) >=0) ? 1 : 0.05; });
     svg.selectAll(".lineNodes")
         .attr("stroke-opacity", function(d2){ return (str.indexOf(d2.id) >=0) ? 1 : 0; });
+    checkVisibility();
 }
 
 // Mouseover the list of node ids in the string input str
@@ -507,6 +508,7 @@ function mouseoverLinksIDs(str){
          else
             return 0.02;
     });
+    checkVisibility();
 }
 
 
@@ -516,25 +518,14 @@ function mouseoutNode() {
         .attr("stroke-opacity", 1);
     svg.selectAll(".nodeText")
         .attr("fill-opacity", 1);
-    svg.selectAll(".linkArc").attr("stroke-opacity", 0.4);
+    svg.selectAll(".linkArc").attr("stroke-opacity", arcOpacity);
     svg.selectAll(".lineNodes")
         .attr("stroke-opacity",1);
+
+    checkVisibility();
 }
 
 
-function tick(){
-    nodes[0].x = width/2;
-    nodes[0].y = height/2;
-    node.attr('cx', function(d) { return d.x; })
-        .attr('cy', function(d) { return d.y; });
-
-    yScale = d3.scale.linear()
-        .range([0, 2])
-        .domain([0, 10]);
-
-
-    linkArcs.attr("d", linkArc);
-}
 
 function linkArc(d) {
     var dx = d.target.x - d.source.x,
