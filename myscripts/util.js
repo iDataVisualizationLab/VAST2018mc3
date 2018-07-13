@@ -120,7 +120,7 @@ function getColor(category) {
   }
 }
 
-
+/*
 var node_drag = d3.behavior.drag()
     .on("dragstart", dragstart)
     .on("drag", dragmove)
@@ -173,7 +173,7 @@ function mouseouted(d) {
         })
     }
 }
-
+*/
 // check if a node for a month m already exist.
 function isContainedInteger(a, m) {
     if (a){

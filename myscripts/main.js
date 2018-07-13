@@ -84,8 +84,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
- d3.csv("data/Suspicious.csv", function (error, data2) {        
-       // d3.csv("data/involved.csv", function (error, data2) {
+       //     d3.csv("data/Suspicious.csv", function (error, data2) {        
+        d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
@@ -339,6 +339,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                         else
                             return 1;
                     });
+                    d3.select(".gr__127_0_0_1").style("opacity",1);
             });    
 
             var minDate = new Date (new Date("May 11, 2015 14:00").getTime() +minT*1000);
@@ -393,8 +394,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 .attr("height", height2-25) // Make brush rects same height
                 .attr("fill", "#E6E7E8");
             //end slider part-----------------------------------------------------------------------------------
-
-
+           
+            colaNetwork(nodeSuspicious, linkSuspicious)
             //for brusher of the slider bar at the bottom
             function brushed() {
                 xScaleTime.domain(brush.empty() ? xScaleTime2.domain() : brush.extent()); // If brush is empty then reset the Xscale domain to default, if not then make it the brush extent
@@ -402,9 +403,9 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 var d1 = (xScaleTime.domain()[0].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 var d2 = (xScaleTime.domain()[1].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 xScale.domain([d1,d2]);
-                //orderNodesTimeline();
-                sortDownstream(nodes,links,[1,1,0,1]);
-                
+                orderNodesTimeline();
+                //sortDownstream(nodes,links,[1,1,0,1]);
+
                 svg.select(".x.axis") // replot xAxis with transition when brush used
                     .transition()
                     .call(xAxis);
