@@ -13,7 +13,7 @@ var linkArrays = [[], [], [], []];
 var clickCount1 =0;
 
 var showAssociated2 = true;
-var showAssociated1 = false;
+var showAssociated1 = true;
 var clickCategoryCounts =[0,0,0,0];
 
 var colorSuspicious = "#900";
@@ -408,7 +408,7 @@ function buttonClick1(){
     });
    nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
    nodes2.forEach(function(d,i) {
-        d.yy = yStart+i*0.1;
+        d.yy = yStart+i*1;
     });
 
    linkArcs.transition().duration(durationTime).attr("d", linkArc2);
@@ -435,27 +435,27 @@ function buttonClick1(){
 
 function orderNodesTimeline(){
     nodes.forEach(function(d) {
-        d.x=xScale(d.listTimes[0]);
-        d.y =0;
+        d.xx=xScale(d.listTimes[0]);
+        d.yy =0;
     });
     nodeSuspicious.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
 
     var curY =yStart;
     nodeSuspicious.forEach(function(d,i) {
         if(i==0){
-            d.y = yStart;
+            d.yy = yStart;
             var previousNodeSize =15;
             if (d.followers){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 d.followers.forEach(function(d) {
                     if (d.neighbors.length<2) {
-                        d.y=yStart - xScaleGlobal(d.listTimes[0])/10;
+                        d.yy=yStart - xScaleGlobal(d.listTimes[0])/10;
                     }
                     else {
                         if (showAssociated2) {
                             curY = curY + previousNodeSize + getNodeSize(d);
                             previousNodeSize = getNodeSize(d);
-                            d.y = curY;
+                            d.yy = curY;
                         }
                     }
                 });
@@ -463,15 +463,15 @@ function orderNodesTimeline(){
         }
         else{
             if (d.neighbors.length==1)  // Suspious with single neighbor
-                d.y=d.neighbors[0].y+13;
+                d.yy=d.neighbors[0].y+13;
             else
-                d.y=curY+13;
-            curY = d.y;
+                d.yy=curY+13;
+            curY = d.yy;
             if (d.followers){
                 d.followers.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
                 var previousNode = d;
                 d.followers.forEach(function(d2,j) {
-                    if (d2.y <=0){// Make sure that we don't not reset y of follower of multiple suspicious nodes
+                    if (d2.yy <=0){// Make sure that we don't not reset y of follower of multiple suspicious nodes
                         if (d2.neighbors.length<2) {
                             if (showAssociated1) {
                                 if (previousNode.neighbors.length < 2)
@@ -479,14 +479,14 @@ function orderNodesTimeline(){
                                 else
                                     curY += getNodeSize(previousNode) + getNodeSize(d2);
                                 previousNode = d2;
-                                d2.y = curY;
+                                d2.yy = curY;
                             }
                         }
                         else{
                             if (showAssociated2) {
                                 curY = curY + getNodeSize(previousNode) + getNodeSize(d2);
                                 previousNode = d2;
-                                d2.y = curY;
+                                d2.yy = curY;
                             }
                         }
                     }
@@ -498,18 +498,18 @@ function orderNodesTimeline(){
     linkArcs.transition().duration(durationTime).attr("d", linkArc2);
 
     svg.selectAll(".lineNodes").transition().duration(durationTime)
-        .attr("x1", function(d) {return d.x;})
-        .attr("y1", function(d) {return d.y;})
+        .attr("x1", function(d) {return d.xx;})
+        .attr("y1", function(d) {return d.yy;})
         .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);;})
-        .attr("y2", function(d) {return d.y;})
+        .attr("y2", function(d) {return d.yy;})
 
     svg.selectAll(".nodeText").transition().duration(durationTime)
-        .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
-        .attr("y", function(d) {return d.y;})
+        .attr("x", function(d) {return d.xx-getNodeSize(d)-2;})
+        .attr("y", function(d) {return d.yy;})
 
     svg.selectAll(".node").transition().duration(durationTime)
-        .attr("cx", function(d) {return d.x;})
-        .attr("cy", function(d) {return d.y;})
+        .attr("cx", function(d) {return d.xx;})
+        .attr("cy", function(d) {return d.yy;})
 
     checkVisibility();
 }

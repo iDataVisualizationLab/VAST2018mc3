@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 600,
-    heightN = 600;
+var widthN = 800,
+    heightN = 800;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -32,7 +32,7 @@ function colaNetwork(nodes, links){
         .links(links)
          .flowLayout("y", dis/2)
         .symmetricDiffLinkLengths(dis/5)
-      //  .linkDistance(60)
+       // .linkDistance(120)
         .start(10,20,20);
 
     // define arrow markers for graph links

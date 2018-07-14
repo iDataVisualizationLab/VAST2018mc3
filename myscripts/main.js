@@ -77,46 +77,42 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
-<<<<<<< HEAD
-        //d3.csv("data/Suspicious.csv", function (error, data2) {
-       d3.csv("data/involved.csv", function (error, data2) {
-       // d3.csv("data/purchases.csv", function (error, data2) {      
-=======
-       //     d3.csv("data/Suspicious.csv", function (error, data2) {        
-       // d3.csv("data/involved.csv", function (error, data2) {
+        // d3.csv("data/Suspicious.csv", function (error, data2) {
+        // d3.csv("data/involved.csv", function (error, data2) {
 
-         d3.csv("data2/group.csv", function (error, data2) {      
+       // d3.csv("data2/group.csv", function (error, data2) {
         //d3.csv("data2/groupCalls.csv", function (error, data2) {      
         //d3.csv("data2/groupEmails.csv", function (error, data2) {      
         // d3.csv("data2/groupPurchases.csv", function (error, data2) {      
         //  d3.csv("data2/groupMeeting.csv", function (error, data2) { 
 
-       //  d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) { 
->>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
+         d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) {
+        //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) {
+        // d3.csv("data3/suspiciousFromDay2.csv", function (error, data2) {
+        // d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
+        //d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {
+        //    d3.csv("data3/suspiciousFromDay5.csv", function (error, data2) {
+       // d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {
+
             if (error) throw error;
 
-            data = data2;
-<<<<<<< HEAD
+       //     data = data2;
 
-            data = data2.filter(function (d){
+            data = data2.filter(function(d){
                 var time = +d["X4"];
-                var date = new Date (new Date("May 11, 2015 14:00").getTime() +time*1000);
-                return new Date("June 1, 2017 14:00") < date && date<new Date("December 31, 2017 14:00");
+                var interval = 1*3600;
+                //var considerTime = 74565933;   // Question 2
 
-            })
+                 var considerTime = 53206509;  // Day 0
+               //  var considerTime = 69572943;
+               // var considerTime = 65109062;  // Day 2
+               //  var considerTime = 81692792;  // Day 3
+               // var considerTime = 66679529;  // Day 4
+              //  var considerTime = 81994361;  // Day 6
 
-=======
-            /*data = data2.filter(function(d){
-                var time = +d["X4"];
-                var interval = 1*3600; 
-                //var considerTime = 74525933;  Question 2
-               
-                //var considerTime = 53206509; 
-                
                 return (considerTime-interval<time && time<considerTime+interval);
-            });*/
-           
->>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
+            });
+
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var time = +d["X4"];
@@ -162,66 +158,107 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             });
             console.log("Done reading data");
 
-            for (var i=0; i< links.length;i++){
-                if (suspicious[links[i].source.id] && suspicious[links[i].target.id]){
+             // Compute followers *************************
+             for (var i=0; i< links.length;i++) {
+                if (suspicious[links[i].source.id] && suspicious[links[i].target.id]) {
                     linkSuspicious.push(links[i]);
                     links[i].betweenSuspicious = true;  // Add new property to indicate links between suspicious
                 }
-                else{
+                else {
                     linkeAssociated.push(links[i]);
                     links[i].betweenSuspicious = false; // Add new property to indicate links between suspicious
 
-                    if (suspicious[links[i].source.id]){
-                       if (links[i].source.followers==undefined){
-                           links[i].source.followers = [];
-                       }
-                       if(isContainedChild(links[i].source.followers, links[i].target)<0)  // No duplicate elements
+                    if (suspicious[links[i].source.id]) {
+                        if (links[i].source.followers == undefined) {
+                            links[i].source.followers = [];
+                        }
+                        if (isContainedChild(links[i].source.followers, links[i].target) < 0)  // No duplicate elements
                             links[i].source.followers.push(links[i].target);
                     }
-                    else if (suspicious[links[i].target.id]){
-                        if (links[i].target.followers==undefined){
+                    else if (suspicious[links[i].target.id]) {
+                        if (links[i].target.followers == undefined) {
                             links[i].target.followers = [];
                         }
-                        if(isContainedChild(links[i].target.followers, links[i].source)<0) // No duplicate elements
+                        if (isContainedChild(links[i].target.followers, links[i].source) < 0) // No duplicate elements
                             links[i].target.followers.push(links[i].source);
                     }
                 }
-                // Compute neighbors
+             }
+
+             // Compute neighbors *************************
+             for (var i=0; i< links.length;i++){
                 if (links[i].source.neighbors==undefined){
                     links[i].source.neighbors = [];
                 }
                 if (links[i].target.neighbors==undefined){
                     links[i].target.neighbors = [];
                 }
-                
-                if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{    
+
+                if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
                     links[i].source.neighbors.push(links[i].target);
                 }
                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
                     links[i].target.neighbors.push(links[i].source);
-
             }
-            /*
-            nodes = nodes.filter(function(d){
-                return d.neighbors.length>1;
-            })
-            var str = " ";
-            for (var i=0; i<nodes.length;i++) {
-                str += nodes[i].id+" ";
-            }
-            links = links.filter(function(d){
-                if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
-                    return d;
-            });
-             */
 
-            // Compute Suspicious nodes
+
+            // Remove nodes of 1 neighbor *************************
+             removerNodes();
+            function removerNodes(){
+                nodes = nodes.filter(function(d){
+                    if (suspicious[d.id])
+                        return d;
+                    else
+                        return d.neighbors.length>1;
+                })
+                var str = " ";
+                for (var i=0; i<nodes.length;i++) {
+                    str += nodes[i].id+" ";
+                }
+                links = links.filter(function(d){
+                    if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
+                        return d;
+                });
+            }
+             
+             nodes.forEach(function(d){
+                 d.neighbors = [];
+             })
+
+             // Compute neighbors *************************
+             for (var i=0; i< links.length;i++){
+                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
+                     links[i].source.neighbors.push(links[i].target);
+                 }
+                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                     links[i].target.neighbors.push(links[i].source);
+             }
+
+             // Remove nodes of 1 neighbor *************************
+             removerNodes();
+
+             // Compute neighbors *************************
+             for (var i=0; i< links.length;i++){
+                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
+                     links[i].source.neighbors.push(links[i].target);
+                 }
+                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                     links[i].target.neighbors.push(links[i].source);
+             }
+
+             // Remove nodes of 1 neighbor *************************
+             removerNodes(); 
+
+
+
+
+             // Compute Suspicious nodes
             for (var i=0; i< nodes.length;i++){
                 if (suspicious[nodes[i].id])
                     nodeSuspicious.push(nodes[i]);
                 else if (nodes[i].neighbors.length<2)
                     nodeAssociated1.push(nodes[i]);
-                else 
+                else
                     nodeAssociated2.push(nodes[i]);
             }
 
@@ -235,18 +272,12 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 }
                 return -1;
             }
-             /*  
-            nodes =  nodes.filter(function(d){
-                return d.neighbors.length>20;
-            })*/
 
 
             // Order nodes and links
             ///nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
             ///links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
 
-            //debugger;
-           
 
 
 
@@ -277,8 +308,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                  .attr("y2", function(d) {return 100;})
                  .style("stroke-dasharray", ("1, 1"))
                  .style("stroke-width",0.5)
-                 .style("stroke", "#000");      
-            
+                 .style("stroke", "#000");
+
             // Add links **************************************************
             svg.selectAll(".linkArc").remove();
             linkArcs = svg.selectAll(".linkArc");
@@ -326,7 +357,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             console.log("Done reading data 4");
             drawLegends();
 
-            //orderNodesTimeline();
+           // orderNodesTimeline();
             buttonClick1();
             console.log("Done reading data 5");
 
@@ -346,12 +377,12 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 data3.forEach(function (d) {
                     str += d["X1"] + " " + d["X3"]+" "+d["X4"] +" ";
                 });
-                
+
                 svg.selectAll(".linkArc")
                     .attr("stroke-opacity", function (d) {
                         return arcOpacity;
                     })
-                    .style("stroke-width", function (d) { 
+                    .style("stroke-width", function (d) {
                         if (str.indexOf(d.id)>=0)
                             return 2;
                         else
@@ -384,8 +415,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 checkVisibility();
 
                 console.log("Done after reading Suspicious.csv");
-           
-            });    
+
+            });
 
             var minDate = new Date (new Date("May 11, 2015 14:00").getTime() +minT*1000);
             var maxDate = new Date (new Date("May 11, 2015 14:00").getTime() +maxT*1000);
@@ -458,9 +489,9 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
            // colaNetwork(nodeCurrent, linkCurrent);
            // colaNetwork(nodeSuspicious, linkSuspicious)
             colaNetwork(nodes, links);
-           
+
             console.log("Done after COLA");
-           
+
 
             //for brusher of the slider bar at the bottom
             function brushed() {
@@ -593,13 +624,8 @@ function linkArc(d) {
 
 function linkArc2(d) {
     var xx = xScale(d.time),
-<<<<<<< HEAD
-        dy = d.target.y - d.source.y,
-        dr = dy*20;
-=======
         dy = d.target.yy - d.source.yy,
         dr = dy*2;
->>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
  //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.yy;
  //   else
