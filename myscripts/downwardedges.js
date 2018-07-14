@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 600,
-    heightN = 600;
+var widthN = 700,
+    heightN = 700;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")

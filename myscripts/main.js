@@ -32,11 +32,11 @@ var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 
 var terms = new Object();
 
-var xStep = 600;
-var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
-var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-100)]);
-var xScaleTime = d3.time.scale().range([xStep+20, (width-100)]);
-var xScaleTime2 =d3.time.scale().range([xStep+20, (width-100)]);
+var xStep = 400;
+var xScale = d3.scale.linear().range([xStep+20, (width-10)]);
+var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-10)]);
+var xScaleTime = d3.time.scale().range([xStep+20, (width-10)]);
+var xScaleTime2 =d3.time.scale().range([xStep+20, (width-10)]);
 
 var yScale;
 var searchTerm ="";
@@ -78,7 +78,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             suspicious[d.ID] = d;
         });
         // d3.csv("data/Suspicious.csv", function (error, data2) {
-         d3.csv("data/involved.csv", function (error, data2) {
+        // d3.csv("data/involved.csv", function (error, data2) {
 
        // d3.csv("data2/group.csv", function (error, data2) {
         //d3.csv("data2/groupCalls.csv", function (error, data2) {      
@@ -86,21 +86,24 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         // d3.csv("data2/groupPurchases.csv", function (error, data2) {      
         //  d3.csv("data2/groupMeeting.csv", function (error, data2) { 
 
-        // d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) {
+         d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) {
         //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) {
         // d3.csv("data3/suspiciousFromDay2.csv", function (error, data2) {
         // d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
         //d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {
         //    d3.csv("data3/suspiciousFromDay5.csv", function (error, data2) {
-       // d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {
+        //d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {
+       //  d3.csv("data3/groupAll.csv", function (error, data2) {
 
+       // d3.csv("data4/allInvolvedTransactions.csv", function (error, data2) {
+        // d3.csv("data4/allSuspiciousTransInPrev1Day.csv", function (error, data2) {
             if (error) throw error;
 
             data = data2;
-            /*
+            
             data = data2.filter(function(d){
                 var time = +d["X4"];
-                var interval = 1*360;
+                var interval = 1*3600;
                 //var considerTime = 74565933;   // Question 2
 
                  var considerTime = 53206509;  // Day 0
@@ -108,12 +111,15 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                // var considerTime = 65109062;  // Day 2
                //  var considerTime = 81692792;  // Day 3
                // var considerTime = 66679529;  // Day 4
-              //  var considerTime = 81994361;  // Day 6
+               //var considerTime = 81994361;  // Day 6
+
+
+                //var considerTime = 1214261;   // Question 3
+
 
                 return (considerTime-interval<time && time<considerTime+interval);
             });
-            */
-
+            
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var time = +d["X4"];
@@ -358,8 +364,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             console.log("Done reading data 4");
             drawLegends();
 
-           orderNodesTimeline();
-            //buttonClick1();
+           // orderNodesTimeline();
+            buttonClick1();
             console.log("Done reading data 5");
 
             /*for (var i = 0; i < termArray.length; i++) {
@@ -513,7 +519,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  2+ Math.pow((d.degree-1),0.3);
+   return  2+ Math.pow((d.degree-1),0.35);
 }
 
 function addLinks(links1) {
