@@ -21,7 +21,7 @@ var color1 = "#777";
 var color2 = "#000";
 
 var durationTime =2000;
-var yStart = 200;
+var yStart = 20;
 
 var arcOpacity = 0.4;
 
@@ -393,15 +393,42 @@ function restart(nodes2,links2) {
     force.resume();
 }
 
-function buttonClick1(){
-    if (clickCount1%2==0){  // Show timeline *********
-        //detactTimeSeries();
-        orderNodesTimeline();
-    }
-    else{
 
-    }
-    clickCount1++;
+
+
+function buttonClick1(){
+    nodes2 = [];
+    nodes.forEach(function(d) {
+        nodes2.push(d);
+    });
+
+    nodes2.forEach(function(d) {
+        d.xx=xScale(d.listTimes[0]);
+        d.yy =0;
+    });
+   nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
+   nodes2.forEach(function(d,i) {
+        d.yy = yStart+i*0.1;
+    });
+
+   linkArcs.transition().duration(durationTime).attr("d", linkArc2);
+
+    svg.selectAll(".lineNodes").transition().duration(durationTime)
+        .attr("x1", function(d) {return d.xx;})
+        .attr("y1", function(d) {return d.yy;})
+        .attr("x2", function(d) {return xScale(d.listTimes[d.listTimes.length-1]);})
+        .attr("y2", function(d) {return d.yy;})
+
+    svg.selectAll(".nodeText").transition().duration(durationTime)
+        .attr("x", function(d) {return d.xx-getNodeSize(d)-2;})
+        .attr("y", function(d) {return d.yy;})
+
+    svg.selectAll(".node").transition().duration(durationTime)
+        .attr("cx", function(d) {return d.xx;})
+        .attr("cy", function(d) {return d.yy;})
+
+    showAssociated1 = true;    
+    checkVisibility();
 }
 
 

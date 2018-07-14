@@ -14,7 +14,11 @@ var  svgNetwork = d3.select("#networkPanel")
     .attr("width", widthN)
     .attr("height",heightN);
 
+var nodesN, linksN; 
+
 function colaNetwork(nodes, links){
+    nodesN = nodes;
+    linksN = links;
     svgNetwork.selectAll("*").remove();
 
     var dis = widthN/Math.sqrt(nodes.length);
