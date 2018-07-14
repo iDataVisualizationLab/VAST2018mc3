@@ -32,7 +32,7 @@ var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 
 var terms = new Object();
 
-var xStep = 290;
+var xStep = 600;
 var xScale = d3.scale.linear().range([xStep+20, (width-100)]);
 var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-100)]);
 var xScaleTime = d3.time.scale().range([xStep+20, (width-100)]);
@@ -64,7 +64,7 @@ var tip = d3.tip()
 svg.call(tip);
 
 
-var minT=1000000, maxT=0;
+var minT=10000000000, maxT=0;
 var suspicious = {};
 var people = {};
 
@@ -77,11 +77,26 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
+<<<<<<< HEAD
         //d3.csv("data/Suspicious.csv", function (error, data2) {
        d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
+=======
+       //     d3.csv("data/Suspicious.csv", function (error, data2) {        
+       // d3.csv("data/involved.csv", function (error, data2) {
+
+         d3.csv("data2/group.csv", function (error, data2) {      
+        //d3.csv("data2/groupCalls.csv", function (error, data2) {      
+        //d3.csv("data2/groupEmails.csv", function (error, data2) {      
+        // d3.csv("data2/groupPurchases.csv", function (error, data2) {      
+        //  d3.csv("data2/groupMeeting.csv", function (error, data2) { 
+
+       //  d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) { 
+>>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
             if (error) throw error;
+
             data = data2;
+<<<<<<< HEAD
 
             data = data2.filter(function (d){
                 var time = +d["X4"];
@@ -90,6 +105,18 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
             })
 
+=======
+            /*data = data2.filter(function(d){
+                var time = +d["X4"];
+                var interval = 1*3600; 
+                //var considerTime = 74525933;  Question 2
+               
+                //var considerTime = 53206509; 
+                
+                return (considerTime-interval<time && time<considerTime+interval);
+            });*/
+           
+>>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var time = +d["X4"];
@@ -174,8 +201,19 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     links[i].target.neighbors.push(links[i].source);
 
             }
-             console.log("Done reading data 2");
-
+            /*
+            nodes = nodes.filter(function(d){
+                return d.neighbors.length>1;
+            })
+            var str = " ";
+            for (var i=0; i<nodes.length;i++) {
+                str += nodes[i].id+" ";
+            }
+            links = links.filter(function(d){
+                if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
+                    return d;
+            });
+             */
 
             // Compute Suspicious nodes
             for (var i=0; i< nodes.length;i++){
@@ -197,21 +235,24 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 }
                 return -1;
             }
-              console.log("Done reading data 3");
-            /*  
+             /*  
             nodes =  nodes.filter(function(d){
                 return d.neighbors.length>20;
             })*/
 
+
             // Order nodes and links
-            nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
-            links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
+            ///nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
+            ///links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
+
+            //debugger;
+           
 
 
 
-
-            xScale.domain([0, maxT]); // Set time domain
-            xScaleGlobal.domain([0, maxT]); // Set time domain
+            xScale.domain([minT, maxT]); // Set time domain
+            xScaleGlobal.domain([minT, maxT]); // Set time domain
+            console.log("Done reading data 2");
 
 
             nodes.forEach(function(d) {
@@ -225,8 +266,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     nodeHighNeighbor.push(d);
             });
 
-
-            // Horizontal lines
+             // Horizontal lines
              svg.selectAll(".lineNodes").remove();
              svg.selectAll(".lineNodes")
                  .data(nodeHighDegree).enter().append("line")
@@ -243,6 +283,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             svg.selectAll(".linkArc").remove();
             linkArcs = svg.selectAll(".linkArc");
             addLinks(links);
+
+             console.log("Done reading data 3");
 
             // Add nodes **************************************************
             svg.selectAll(".node").remove();
@@ -281,9 +323,12 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 .on("mouseout", mouseoutNode);
 
             // Other functions *********************************************
+            console.log("Done reading data 4");
             drawLegends();
 
-            orderNodesTimeline();
+            //orderNodesTimeline();
+            buttonClick1();
+            console.log("Done reading data 5");
 
             /*for (var i = 0; i < termArray.length; i++) {
              optArray.push(termArray[i].term);
@@ -337,6 +382,9 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
                 //    d3.select(".gr__127_0_0_1").style("opacity",1);
                 checkVisibility();
+
+                console.log("Done after reading Suspicious.csv");
+           
             });    
 
             var minDate = new Date (new Date("May 11, 2015 14:00").getTime() +minT*1000);
@@ -407,10 +455,12 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
                     linkCurrent.push(links[i]);
             }
-            //colaNetwork(nodeCurrent, linkCurrent);
-            colaNetwork(nodeSuspicious, linkSuspicious)
-
-
+           // colaNetwork(nodeCurrent, linkCurrent);
+           // colaNetwork(nodeSuspicious, linkSuspicious)
+            colaNetwork(nodes, links);
+           
+            console.log("Done after COLA");
+           
 
             //for brusher of the slider bar at the bottom
             function brushed() {
@@ -418,7 +468,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 var d1 = (xScaleTime.domain()[0].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 var d2 = (xScaleTime.domain()[1].getTime() - new Date("May 11, 2015 14:00").getTime())/1000;
                 xScale.domain([d1,d2]);
-                orderNodesTimeline();
+                //orderNodesTimeline();
                 //sortDownstream(nodes,links,[1,1,0,1]);
 
                 svg.select(".x.axis") // replot xAxis with transition when brush used
@@ -431,7 +481,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  2+ Math.pow((d.degree-1),0.35);
+   return  2+ Math.pow((d.degree-1),0.3);
 }
 
 function addLinks(links1) {
@@ -532,8 +582,8 @@ function mouseoutNode() {
 
 
 function linkArc(d) {
-    var dx = d.target.x - d.source.x,
-        dy = d.target.y - d.source.y,
+    var dx = d.target.xx - d.source.xx,
+        dy = d.target.yy - d.source.yy,
         dr = Math.sqrt(dx * dx + dy * dy)*2;
    // if (d.source.y<d.target.y )
         return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
@@ -543,10 +593,15 @@ function linkArc(d) {
 
 function linkArc2(d) {
     var xx = xScale(d.time),
+<<<<<<< HEAD
         dy = d.target.y - d.source.y,
         dr = dy*20;
+=======
+        dy = d.target.yy - d.source.yy,
+        dr = dy*2;
+>>>>>>> 2d99ff5b9b0e0d547e8c512fc8b115cbf6a366c4
  //   if (d.source.y<d.target.y )
-        return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
+        return "M" + xx + "," + d.source.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.yy;
  //   else
  //       return "M" + xx + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.source.y;
 }
