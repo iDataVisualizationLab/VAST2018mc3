@@ -77,12 +77,19 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         data1.forEach(function (d) {
             suspicious[d.ID] = d;
         });
-       //     d3.csv("data/Suspicious.csv", function (error, data2) {        
-        d3.csv("data/involved.csv", function (error, data2) {
+        //d3.csv("data/Suspicious.csv", function (error, data2) {
+       d3.csv("data/involved.csv", function (error, data2) {
        // d3.csv("data/purchases.csv", function (error, data2) {      
             if (error) throw error;
             data = data2;
-           
+
+            data = data2.filter(function (d){
+                var time = +d["X4"];
+                var date = new Date (new Date("May 11, 2015 14:00").getTime() +time*1000);
+                return new Date("June 1, 2017 14:00") < date && date<new Date("December 31, 2017 14:00");
+
+            })
+
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var time = +d["X4"];
@@ -296,11 +303,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 });
                 
                 svg.selectAll(".linkArc")
-                    .attr("stroke-opacity", function (d) { 
-                        if (str.indexOf(d.id)>=0)
-                            return 0.5;
-                        else
-                            return 0.4;
+                    .attr("stroke-opacity", function (d) {
+                        return arcOpacity;
                     })
                     .style("stroke-width", function (d) { 
                         if (str.indexOf(d.id)>=0)
@@ -540,7 +544,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.y - d.source.y,
-        dr = dy*2;
+        dr = dy*20;
  //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.y;
  //   else
