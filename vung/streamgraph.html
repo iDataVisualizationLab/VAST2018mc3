@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../javascripts/d3.v3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<div id="streamGraphDiv"></div>
+<script>
+    d3.csv("../data/mc3streamdata.csv", function (error, rawData) {
+        data = rawData.map(d => {
+            d.date = new Date(d.date.substr(0, 4) + "-" + d.date.substr(4, 2) + "-" + d.date.substr(6, 2));
+            d.count = +d.count;
+            d.type = +d.type;
+            return d;
+        });
+
+        let minDate = d3.min(data.map(d=>d.date));
+        data = data.map(d=>{
+           d.dayIndex = datediff(minDate, d.date);
+           return d;
+        });
+        let maxDateIndex = d3.max(data.map(d=>d.dayIndex));
+        let typeNames = ['calls', 'emails', 'meetings', 'purchases'];
+        let traces = [];
+        for (let i = 0; i < typeNames.length; i++) {
+            let trace = {x: [], y: [], text:[], fill: 'tonexty', type:'scatter', mode: 'none', hovertext: [], name: typeNames[i], hoverinfo:'text'};
+            let datai = getDataByTypeId(i);
+            datai.sort((a, b) => a-b);
+            for (let j = 0; j < maxDateIndex; j++) {
+                let d = datai.filter(d=>d.dayIndex === j && d.type === i);
+                if(d.length>0){
+                    trace.x.push(d[0].date);
+                    trace.y.push(d[0].count);
+                    trace.text.push('');
+                    trace.hovertext.push(d[0].count);
+                }else{
+                    trace.x.push(data.filter(d=>d.dayIndex===j)[0].date);
+                    trace.y.push(0);
+                    trace.text.push('');
+                    trace.hovertext.push(0);
+                }
+            }
+            traces.push(trace);
+        }
+        let plotDiv = document.getElementById('streamGraphDiv');
+        Plotly.newPlot(plotDiv, stackedArea(traces), {title: 'Stacked Area Graph'});
+
+        function getDataByTypeId(typeId) {
+            return data.filter(d=>d.type===typeId);
+        }
+        function datediff(first, second) {
+            return Math.round((second - first) / (1000 * 60 * 60 * 24));
+        }
+        function stackedArea(traces) {
+            for (var i = 1; i < traces.length; i++) {
+                for (var j = 0; j < (Math.min(traces[i]['y'].length, traces[i - 1]['y'].length)); j++) {
+                    traces[i]['y'][j] += traces[i - 1]['y'][j];
+                }
+            }
+            return traces;
+        }
+    });
+</script>
+</body>
+</html>
