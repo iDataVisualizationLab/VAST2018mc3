@@ -78,7 +78,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             suspicious[d.ID] = d;
         });
         // d3.csv("data/Suspicious.csv", function (error, data2) {
-        // d3.csv("data/involved.csv", function (error, data2) {
+         d3.csv("data/involved.csv", function (error, data2) {
 
        // d3.csv("data2/group.csv", function (error, data2) {
         //d3.csv("data2/groupCalls.csv", function (error, data2) {      
@@ -86,7 +86,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         // d3.csv("data2/groupPurchases.csv", function (error, data2) {      
         //  d3.csv("data2/groupMeeting.csv", function (error, data2) { 
 
-         d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) {
+        // d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) {
         //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) {
         // d3.csv("data3/suspiciousFromDay2.csv", function (error, data2) {
         // d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
@@ -96,11 +96,11 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
             if (error) throw error;
 
-       //     data = data2;
-
+            data = data2;
+            /*
             data = data2.filter(function(d){
                 var time = +d["X4"];
-                var interval = 1*3600;
+                var interval = 1*360;
                 //var considerTime = 74565933;   // Question 2
 
                  var considerTime = 53206509;  // Day 0
@@ -112,6 +112,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
                 return (considerTime-interval<time && time<considerTime+interval);
             });
+            */
 
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
@@ -357,8 +358,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             console.log("Done reading data 4");
             drawLegends();
 
-           // orderNodesTimeline();
-            buttonClick1();
+           orderNodesTimeline();
+            //buttonClick1();
             console.log("Done reading data 5");
 
             /*for (var i = 0; i < termArray.length; i++) {
@@ -536,7 +537,10 @@ function addNodes(nodes1) {
         .attr('r', getNodeSize)
         .attr('cx', function(d) { return d.x; })
         .attr('cy', function(d) { return d.y; })
-        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : ((d.neighbors.length<2) ? color1 : color2); })
+        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : 
+            //Gail,Feindt,2040565
+            d.id=="2040565" ? "#f00" :
+            ((d.neighbors.length<2) ? color1 : color2); })
         .attr("fill-opacity", 1)
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
@@ -625,7 +629,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.yy - d.source.yy,
-        dr = dy*2;
+        dr = dy*20;
  //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.yy;
  //   else

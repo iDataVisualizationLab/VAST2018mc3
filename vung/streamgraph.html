@@ -9,7 +9,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-<div id="streamGraphDiv"></div>
+<div id="streamGraphDiv" style="width: 100%; height: 1000px;"></div>
 <script>
     d3.csv("../data/mc3streamdata.csv", function (error, rawData) {
         data = rawData.map(d => {
@@ -25,10 +25,10 @@
            return d;
         });
         let maxDateIndex = d3.max(data.map(d=>d.dayIndex));
-        let typeNames = ['calls', 'emails', 'meetings', 'purchases'];
+        let typeNames = ['calls','emails', 'meetings', 'purchases'];
         let traces = [];
         for (let i = 0; i < typeNames.length; i++) {
-            let trace = {x: [], y: [], text:[], fill: 'tonexty', type:'scatter', mode: 'none', hovertext: [], name: typeNames[i], hoverinfo:'text'};
+            let trace = {x: [], y: [], text:[], fill: 'tonexty', opacity: 1, type:'scatter', mode: 'none', hovertext: [], name: typeNames[i], hoverinfo:'text'};
             let datai = getDataByTypeId(i);
             datai.sort((a, b) => a-b);
             for (let j = 0; j < maxDateIndex; j++) {

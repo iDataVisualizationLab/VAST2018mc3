@@ -26,7 +26,7 @@ var yStart = 20;
 var arcOpacity = 0.4;
 
 function colores_google(n) {
-    var colores_g = ["#3060aa", "#660099", "#996600", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+    var colores_g = ["#3060aa", "#f80", "#f00", "#10aa18", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
     return colores_g[n % colores_g.length];
 }
 
@@ -406,10 +406,18 @@ function buttonClick1(){
         d.xx=xScale(d.listTimes[0]);
         d.yy =0;
     });
-   nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
-   nodes2.forEach(function(d,i) {
-        d.yy = yStart+i*1;
+   //nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
+    nodes2.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
+          
+   var stepY =1;
+   if (nodes.length>0)        
+        stepY = (height-150)/nodes.length  
+    if (stepY>13)
+        stepY =13;            
+    nodes2.forEach(function(d,i) {
+        d.yy = yStart+i*stepY;
     });
+       
 
    linkArcs.transition().duration(durationTime).attr("d", linkArc2);
 
@@ -463,7 +471,7 @@ function orderNodesTimeline(){
         }
         else{
             if (d.neighbors.length==1)  // Suspious with single neighbor
-                d.yy=d.neighbors[0].y+13;
+                d.yy=d.neighbors[0].yy+18;
             else
                 d.yy=curY+13;
             curY = d.yy;
@@ -473,7 +481,7 @@ function orderNodesTimeline(){
                 d.followers.forEach(function(d2,j) {
                     if (d2.yy <=0){// Make sure that we don't not reset y of follower of multiple suspicious nodes
                         if (d2.neighbors.length<2) {
-                            if (showAssociated1) {
+                            if (showAssociated1 || suspicious[d.id] ) {
                                 if (previousNode.neighbors.length < 2)
                                     curY += 0.2;
                                 else
@@ -483,7 +491,7 @@ function orderNodesTimeline(){
                             }
                         }
                         else{
-                            if (showAssociated2) {
+                            if (showAssociated2 || suspicious[d.id] ) {
                                 curY = curY + getNodeSize(previousNode) + getNodeSize(d2);
                                 previousNode = d2;
                                 d2.yy = curY;

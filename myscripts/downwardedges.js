@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 800,
-    heightN = 800;
+var widthN = 600,
+    heightN = 600;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -58,7 +58,10 @@ function colaNetwork(nodes, links){
       .enter().append("circle")
         .attr("class", "node2")
         .attr('r', getNodeSize)
-        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : ((d.neighbors.length<2) ? color1 : color2); })
+        .attr("fill", function (d) { return suspicious[d.id] ? colorSuspicious : 
+            //Gail,Feindt,2040565
+            d.id=="2040565" ? "#f00" :
+           ((d.neighbors.length<2) ? color1 : color2); })
         .attr("fill-opacity", 1)
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 1)
