@@ -95,7 +95,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
        //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) { // no structure for 48 hours
        //  d3.csv("data3/suspiciousFromDay2.csv", function (error, data2) {
        //  d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
-        d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {   // has structure for 24 hours
+       // d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {   // has structure for 24 hours
        //  d3.csv("data3/suspiciousFromDay5.csv", function (error, data2) {  // has structure for 32 hours 700 nodes
       //  d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {   // has structure for 48 hours
        //  d3.csv("data3/groupAll.csv", function (error, data2) {  // 1 day before and one day after 
@@ -104,7 +104,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
        //  d3.csv("data4/allSuspiciousTransInPrev1Day.csv", function (error, data2) {  // For Question 4
 
        //  d3.csv("data4/all8HoursTrans.csv", function (error, data2) {
-       // d3.csv("data4/all2HoursTrans.csv", function (error, data2) {
+       d3.csv("data4/all2HoursTrans.csv", function (error, data2) {
               if (error) throw error;
 
             //data2[0].Time = 1214261;
@@ -120,7 +120,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
          //data2[0].Time = 74565933;   // suspicous
           //  considerTime = +data2[0].Time;
 
-
+          /*
             
             if (data2[0].Time!=undefined){
                 considerTime = +data2[0].Time;
@@ -142,7 +142,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     return (considerTime-interval<time && time<considerTime+interval);
                 });    
             }
-            else
+            else */
                 data = data2;
            
             data.forEach(function (d) {
@@ -249,7 +249,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
              var str0 =str;
              console.log("Str=" +str);
 
-             
+             /*
              // Remove nodes of PURCHASES **************************************************
              var str =" "
              for (var i=0; i< links.length;i++){
@@ -292,7 +292,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             links = links.filter(function(d){
                 if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
                     return d;
-            });
+            });*/
             
             
 
@@ -305,7 +305,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     if (suspicious[d.id] || (str_!=undefined && str_.indexOf(d.id)>=0))
                         return d;
                     else
-                        return d.neighbors.length>1;
+                        return d.neighbors.length>3;
                 })
                 var str = " ";
                 for (var i=0; i<nodes.length;i++) {
