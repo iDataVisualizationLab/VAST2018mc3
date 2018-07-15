@@ -33,10 +33,10 @@ var nodeHighNeighbor =[]; // Nodes with neighbors >=2
 var terms = new Object();
 
 var xStep = 400;
-var xScale = d3.scale.linear().range([xStep+20, (width-50)]);
-var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-50)]);
-var xScaleTime = d3.time.scale().range([xStep+20, (width-50)]);
-var xScaleTime2 =d3.time.scale().range([xStep+20, (width-50)]);
+var xScale = d3.scale.linear().range([xStep+20, (width-10)]);
+var xScaleGlobal = d3.scale.linear().range([xStep+20, (width-10)]);
+var xScaleTime = d3.time.scale().range([xStep+20, (width-10)]);
+var xScaleTime2 =d3.time.scale().range([xStep+20, (width-10)]);
 
 var yScale;
 var searchTerm ="";
@@ -83,10 +83,10 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
        // d3.csv("data/involved.csv", function (error, data2) {
 
        //  d3.csv("data2/group.csv", function (error, data2) {
-        //d3.csv("data2/groupCalls.csv", function (error, data2) {      
-        //d3.csv("data2/groupEmails.csv", function (error, data2) {      
-       //  d3.csv("data2/groupPurchases.csv", function (error, data2) {      
-          d3.csv("data2/groupMeeting.csv", function (error, data2) { 
+       // d3.csv("data2/groupCalls.csv", function (error, data2) {      
+        d3.csv("data2/groupEmails.csv", function (error, data2) {      
+      //   d3.csv("data2/groupPurchases.csv", function (error, data2) {      
+     //     d3.csv("data2/groupMeeting.csv", function (error, data2) { 
 
      // d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) { // has structure for 24 hours
                                                                             // for 24 hours ->1000 nodes
@@ -457,15 +457,17 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     .attr("stroke-opacity", function (d) {
                         if (considerTime==d.time && d.category=="2")
                             return 1;
+                        else if (str.indexOf(d.id)>=0)
+                            return 0.7;
                         return arcOpacity;
                     })
                     .style("stroke-width", function (d) {
                         if (considerTime==d.time && d.category=="2")
                             return 3
                         else if (str.indexOf(d.id)>=0)
-                            return 3;
-                        else
                             return 2;
+                        else
+                            return 1;
                     });
 
                 /*
@@ -511,15 +513,15 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             xScaleTime.domain([minDate,maxDate]); // extent = highest and lowest points, domain is data, range is bouding box
             xScaleTime2.domain([minDate,maxDate]); // Setting a duplicate xdomain for brushing reference later
             // draw line graph
-           // svg.append("g")
-           ///     .attr("class", "x axis")
-            //    .attr("transform", "translate(0," + (height-150) + ")")
-            //    .call(xAxis);
+            svg.append("g")
+             .attr("class", "x axis")
+               .attr("transform", "translate(0," + (3) + ")")
+               .call(xAxis);
 
 
             //for slider part-----------------------------------------------------------------------------------
             var context = svg.append("g") // Brushing context box container
-                .attr("transform", "translate(" + 0 + "," + (height-150) + ")")
+                .attr("transform", "translate(" + 0 + "," + (height-120) + ")")
                 .attr("class", "context");
 
             //for slider part-----------------------------------------------------------------------------------
@@ -591,7 +593,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  2+ Math.pow((d.degree-1),0.3);
+   return  2+ Math.pow((d.degree-1),0.2);
 }
 
 function addLinks(links1) {
@@ -707,7 +709,7 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.yy - d.source.yy,
-        dr = dy/2;
+        dr = dy*30;
  //   if (d.source.y<d.target.y )
         return "M" + xx + "," + d.source.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.yy;
  //   else

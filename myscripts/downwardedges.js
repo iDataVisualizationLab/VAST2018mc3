@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 300,
-    heightN = 300;
+var widthN = 400,
+    heightN = 400;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,9 +33,9 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", dis/2)
+        .flowLayout("y", dis*2)
         .symmetricDiffLinkLengths(dis/5)
-        .linkDistance(70)
+        .linkDistance(60)
         .start(10,20,20);
 
     // define arrow markers for graph links
@@ -64,13 +64,13 @@ function colaNetwork(nodes, links){
         })
         .attr("stroke-width", function (d){
             if (considerTime==d.time && d.category=="2"){
-                return 3;
+                return 2;
             }
             else
-                return 2.5;
+                return 1.5;
         });
 
-
+/*
         svgNetwork.selectAll(".nodeText").remove();
         svgNetwork.selectAll(".nodeText")
             .data(nodes).enter().append("text")
@@ -98,7 +98,7 @@ function colaNetwork(nodes, links){
             })
             .on("mouseover", mouseoverNode)
             .on("mouseout", mouseoutNode);
-
+*/
 
     var node2 = svgNetwork.selectAll(".node2")
         .data(nodes)
@@ -142,7 +142,7 @@ function colaNetwork(nodes, links){
                 targetX = d.target.x - (targetPadding * normX),
                 targetY = d.target.y - (targetPadding * normY);
 
-            var rScale = d3.scale.linear().range([dist/2, dist*3]);
+            var rScale = d3.scale.linear().range([dist*2, dist*20]);
             rScale.domain([0, maxT]); // Set time domain
             var r = rScale(d.time);
             return "M" + sourceX + "," + sourceY+ "A" + r + "," + r + " 0 0,1 " + targetX + "," + targetY;
