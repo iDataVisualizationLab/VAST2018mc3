@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 700,
-    heightN = 700;
+var widthN = 300,
+    heightN = 300;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -15,6 +15,8 @@ var  svgNetwork = d3.select("#networkPanel")
     .attr("height",heightN);
 
 var nodesN, linksN; 
+
+ 
 
 function colaNetwork(nodes, links){
     nodesN = nodes;
@@ -30,9 +32,10 @@ function colaNetwork(nodes, links){
     d3cola
         .nodes(nodes)
         .links(links)
-         .flowLayout("y", dis/2)
+       // .jaccardLinkLengths(140,0.7)
+        .flowLayout("y", dis/2)
         .symmetricDiffLinkLengths(dis/5)
-       // .linkDistance(120)
+        .linkDistance(70)
         .start(10,20,20);
 
     // define arrow markers for graph links
@@ -51,7 +54,51 @@ function colaNetwork(nodes, links){
         .data(links)
       .enter().append('svg:path')
         .attr('class', 'link')
-        .style("stroke", function (d) {return colores_google(d.category);});
+        .attr("stroke", function (d) {return colores_google(d.category);})
+        .attr("stroke-opacity", function (d){
+            if (considerTime==d.time && d.category=="2"){
+                return 1;
+            }
+            else
+                return arcOpacity;
+        })
+        .attr("stroke-width", function (d){
+            if (considerTime==d.time && d.category=="2"){
+                return 3;
+            }
+            else
+                return 2.5;
+        });
+
+
+        svgNetwork.selectAll(".nodeText").remove();
+        svgNetwork.selectAll(".nodeText")
+            .data(nodes).enter().append("text")
+            .attr("class", "nodeText")
+            .text(function(d) {
+                if (suspicious[d.id]!=undefined)
+                    return suspicious[d.id].first +" "+suspicious[d.id].last;
+                else
+                    return people[d.id].first +" "+people[d.id].last;
+            })
+            .style("fill", function(d){
+               if (suspicious[d.id])
+                    return colorSuspicious;
+                else
+                    return "#333";
+            })
+            .style("text-anchor","middle")
+            .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+             .attr("font-family", "sans-serif")
+            .attr("font-size", function(d) {
+                if (suspicious[d.id]!=undefined)
+                    return 13;
+                else
+                    return 5+getNodeSize(d);
+            })
+            .on("mouseover", mouseoverNode)
+            .on("mouseout", mouseoutNode);
+
 
     var node2 = svgNetwork.selectAll(".node2")
         .data(nodes)
@@ -71,7 +118,9 @@ function colaNetwork(nodes, links){
         .call(d3cola.drag);
 
     node2.append("title")
-        .text(function (d) { return d.name; });
+        .text(function (d) { return people[d.id].first +" "+people[d.id].last;; });
+
+
 
     checkVisibility();
     d3cola.on("tick", function () {
@@ -79,6 +128,7 @@ function colaNetwork(nodes, links){
       //      if (isIE()) this.parentNode.insertBefore(this, this);
       //  });
         // draw directed edges with proper padding from node centers
+
         path2.attr('d', function (d) {
             var deltaX = d.target.x - d.source.x,
                 deltaY = d.target.y - d.source.y,
@@ -92,7 +142,7 @@ function colaNetwork(nodes, links){
                 targetX = d.target.x - (targetPadding * normX),
                 targetY = d.target.y - (targetPadding * normY);
 
-            var rScale = d3.scale.linear().range([dist, dist*5]);
+            var rScale = d3.scale.linear().range([dist/2, dist*3]);
             rScale.domain([0, maxT]); // Set time domain
             var r = rScale(d.time);
             return "M" + sourceX + "," + sourceY+ "A" + r + "," + r + " 0 0,1 " + targetX + "," + targetY;
@@ -102,6 +152,9 @@ function colaNetwork(nodes, links){
         node2.attr("cx", function (d) { return d.x; })
             .attr("cy", function (d) { return d.y; });
 
+        svgNetwork.selectAll(".nodeText")
+        .attr("x", function(d) {return d.x-getNodeSize(d)-2;})
+        .attr("y", function(d) {return d.y-getNodeSize(d)-2;})    
 
     });
 
