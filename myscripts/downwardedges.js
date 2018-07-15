@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 500,
-    heightN = 500;
+var widthN = 600,
+    heightN = 600;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", 80)
-        .symmetricDiffLinkLengths(dis/4.5)
+       // .flowLayout("y", 80)
+        .symmetricDiffLinkLengths(23)
         //.linkDistance(40)
         .start(10,20,20);
 
@@ -184,8 +184,6 @@ function colaNetwork(nodes, links){
             if (considerTime>0){
                 var name1 = people[suspiciousId1].first +" "+people[suspiciousId1].last;
                 var name2 = people[suspiciousId2].first +" "+people[suspiciousId2].last;
-
-
                 return "Suspicous purchase between "+name1 +" & "+name2;
             }
             else

@@ -82,9 +82,9 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             suspicious[d.ID] = d;
         });
         // d3.csv("data/Suspicious.csv", function (error, data2) {
-      d3.csv("data/involved.csv", function (error, data2) {
+      //d3.csv("data/involved.csv", function (error, data2) {
 
-      //   d3.csv("data2/group.csv", function (error, data2) {
+         d3.csv("data2/group.csv", function (error, data2) {
        // d3.csv("data2/groupCalls.csv", function (error, data2) {      
       //  d3.csv("data2/groupEmails.csv", function (error, data2) {      
       //   d3.csv("data2/groupPurchases.csv", function (error, data2) {      
@@ -297,7 +297,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             
 
 
-            
+              /*
             // Remove nodes of 1 neighbor *************************
             removerNodes();
             function removerNodes(str_){
@@ -329,7 +329,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                      links[i].target.neighbors.push(links[i].source);
              }
 
-             /*
+           
              // Remove nodes of 1 neighbor *************************
              removerNodes(str0);        
              nodes.forEach(function(d){
@@ -358,9 +358,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 else
                     nodeAssociated2.push(nodes[i]);
             }
-
-           // debugger;
-
+             
             // check if a node for  already exist.
             function isContainedChild(a, m) {
                 if (a){
@@ -371,12 +369,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 }
                 return -1;
             }
-
-
-            // Order nodes and links
-            ///nodes.sort(function (a, b) { return (a.degree > b.degree) ? -1 : 1;});
-            ///links.sort(function (a, b) { return (a.betweenSuspicious > b.betweenSuspicious) ? -1 : 1;});
-
 
 
 
@@ -470,7 +462,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
              });
              }); */
 
-
+            // --------------------------------------------------------------------
             d3.csv("data/Suspicious.csv", function (error, data3) {
                 var str = " ";
                 data3.forEach(function (d) {
@@ -491,7 +483,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                         else if (str.indexOf(d.id)>=0)
                             return 1.5;
                         else
-                            return 1;
+                            return 0.5;
                     });
 
                 /*
@@ -617,7 +609,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  3+ Math.pow((d.degree-1),0.25);
+   return  1+ Math.pow(d.neighbors.length,0.4);
 }
 
 function addLinks(links1) {
