@@ -23,7 +23,7 @@ var color2 = "#000";
 var durationTime =2000;
 var yStart = 30;
 
-var arcOpacity = 0.6;
+var arcOpacity = 0.5;
 
 function colores_google(n) {
     var colores_g = ["#3060aa", "#f80", "#f00", "#10aa18", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
@@ -33,10 +33,10 @@ function colores_google(n) {
 function drawLegends(){
     var svgLegend = d3.select("#controlPanel")
         .append("svg")
-        .attr("width", 220)
-        .attr("height",400);
+        .attr("width", 125)
+        .attr("height",160);
 
-    var legendTop1 = 70;
+    var legendTop1 = 20;
     svgLegend.append("text")
         .attr("class","textTitle1")
         .attr("x", 8 )
@@ -92,7 +92,8 @@ function drawLegends(){
         .attr("fill", color2 )
         .attr("font-family", "sans-serif")
         .attr("font-size",12)
-        .text("Associated to many suspicious"+" ("+nodeAssociated2.length+")")
+        //.text("Associated to many suspicious"+" ("+nodeAssociated2.length+")")
+        .text("Associated "+" ("+nodeAssociated2.length+")")
         .on("mouseover", function(d){
             svgLegend.selectAll(".circleLegend2")
                 .attr("stroke", "#777" );
@@ -123,7 +124,7 @@ function drawLegends(){
             mouseoutNode();
         })
         .on("click", toggleAssociated2);
-
+/*
     svgLegend.append("text")
         .attr("class","textLegend1")
         .attr("x", 25 )
@@ -161,7 +162,7 @@ function drawLegends(){
                 .attr("stroke", "#fff" );
             mouseoutNode();
         })
-        .on("click", toggleAssociated);    
+        .on("click", toggleAssociated);    */
 
         
 
@@ -226,7 +227,7 @@ function drawLegends(){
     }
 
 
-    var legendTop2 = 154;
+    var legendTop2 = 84;
     var scale = d3.scale.linear().domain([-1, 10]).range([legendTop2, legendTop2+180]);
     svgLegend.append("text")
         .attr("class","textTitle2")
@@ -412,8 +413,8 @@ function buttonClick1(){
    var stepY =1;
    if (nodes.length>0)        
         stepY = (height-150)/nodes.length  
-    if (stepY>4)
-        stepY =4;            
+    if (stepY>10)
+        stepY =10;            
     nodes2.forEach(function(d,i) {
         d.yy = yStart+i*stepY;
     });

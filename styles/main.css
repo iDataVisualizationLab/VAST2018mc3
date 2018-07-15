@@ -7,8 +7,8 @@
 
 #controlPanel{
   position:absolute;
-  background-color: rgba(220,220,220, 0.95);
-  left:1px;
+  background-color: rgba(255,255,255, 0.95);
+  left:2px;
   top:10px;
 }
 
@@ -17,7 +17,7 @@
   background-color: rgba(255,255,255, 1);
   border-radius: 25px;
   left:10px;
-  top:500px;
+  top:700px;
 }
 
 

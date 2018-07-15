@@ -22,7 +22,7 @@ w\:* {behavior:url(#default#VML);}
 .shape {behavior:url(#default#VML);}
 </style>
 <![endif]-->
-<title>VAST 2018 TTU, mini challenge 3</title>
+<title>TTU VAST 2018 MC3</title>
 <!--[if gte mso 9]><xml>
  <o:DocumentProperties>
   <o:Author>Whiting, Mark A</o:Author>
@@ -1203,14 +1203,24 @@ color:#444444'><span style='mso-list:Ignore'>1.<span style='font:7.0pt "Times Ne
 </span></span></span></b><![endif]><b style='mso-bidi-font-weight:normal'><span
 style='font-family:Arial;mso-fareast-font-family:"Times New Roman";color:#444444'> Using the four large Kasios International data sets, combine the different sources to create a single picture of the company. Characterize changes in the company over time. According to the company's communications and purchase habits, is the company growing?<o:p></o:p></span></b></p>
 
+<br>
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-margin-left:.25in;text-align:justify;background:white'>Figure 1 shows the changes in the company over time. The company's communications (calls, emails, and meetings) are pretty stable while the number of purchases (in red) has increased significantly over the past 2 years. Therefore, the company is growing.</p>
+margin-left:.25in;text-align:justify;background:white'>Figure 1 shows the changes in the company over time. The company's communications (calls, emails, and meetings) are pretty stable while the number of purchases (in red) has increased significantly over the past 2 years (as expanded to show futher detail in Figure 2). Therefore, the company is growing.</p>
 
-<img src="Figures/f1.png" alt="MC 3 VAST 2018" width="100%" >
-
+<img src="Figures/figure1.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 1:  Kasios International's communications and purchase habits from 2015 to 2017 <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 1:  Kasios International's communications and purchase habits from 2015 to 2017. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+
+
+<img src="Figures/figure2.png" alt="MC 3 VAST 2018" width="100%" >
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in;text-align:justify;background:white'>
+<p class=MsoCaption align=center style='text-align:center'>Figure 2:  Kasios International's <b><font color="#e68">purchases</font></b> from 2015 to 2017. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+
+
+
+
 
 <br>
 </div>
@@ -1230,38 +1240,49 @@ color:#444444'><span style='mso-list:Ignore'>2.<span style='font:7.0pt "Times Ne
 </span></span></span></b><![endif]><b style='mso-bidi-font-weight:normal'><span
 style='font-family:Arial;mso-fareast-font-family:"Times New Roman";color:#444444'> Combine the four data sources for group that the insider has identified as being suspicious and locate the group in the larger dataset. Determine if anyone else appears to be closely associated with this group. Highlight which employees are making suspicious purchases, according to the insider's data.<o:p></o:p></span></b></p>
 
-
-<img src="Figures/f21.png" alt="MC 3 VAST 2018" width="100%" >
+<br>
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 2:  Ativities of 20 Kasios employees (red nodes) that the insider has identified as being suspicious: (a) network view (b) Timeline view - Each dashed horizontal line present a timeline of the employee on the left. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+Our visualization has 2 main components: The network view on the left and the timeline view on the right. Nodes are Kasios's employee, <font color="#b00">darker red</font> nodes are suspicous people (as identified by the insider). Links (or arcs) are color-coded by activitiy category. We use arrows and clock-wise curvatures to indicate activity direction.
+  <ul>
+  <li>The network view is implemented using <a href="http://ialab.it.monash.edu/webcola/">Cola.js</a>. We adopted the Flow Layout to force employees at the destinations of these activities (people who are receiving a call, receiving an email, selling something to a buyer, or being invited to a meeting) occupy lower positions in the network. 
+</li>
+  <li> The timeline view shows the same input data, focusing on <b>when</b> an activitiy occurs. Each horizontal dashed line represents an employee's lifetime.   </li>
+</ul>
+</p>
 
-From the group of 20 Kasios employees (red nodes) that the insider has identified as being suspicious, we expand another level to identify other associated factors (black nodes) in the following Figures. Within these associated employees, Gail Feindt (hilighted in bright red) responsible for 24 different purchases as shown in Figure 5.
-<img src="Figures/f22.png" alt="MC 3 VAST 2018" width="100%" >
+
+<img src="Figures/figure3.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 3:  Ativities of 20 suspicious employees (red nodes) and 42 associated employees (black nodes): (a) network view (b) Timeline view - nodes are ordered by their first activity. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'><b>Figure 3:</b>  Ativities of 20 Kasios employees (<font color="#b00">red</font> nodes) that the insider has identified as being suspicious: <b>(a)</b> Network view - Node sizes are computed based on their activities <b>(b)</b> Timeline view - Each dashed horizontal line presents a timeline of the employee whose name is printed at the beginning of his/her timeline. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
+From the group of 20 suspicious employees, we expand another network level to identify other associated factors (black nodes) in the following Figures. Within these associated employees, Gail Feindt (hilighted in bright red) responsible for 24 different purchases. As depicted in Figure 5, the purchase transaction between <font color="#b00">Rosalia Larroque</font> and <font color="#b00">Jenice Savaria</font> seems suspicous.
+
+  
+<img src="Figures/figure4.png" alt="MC 3 VAST 2018" width="100%" >
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in;text-align:justify;background:white'>
+<p class=MsoCaption align=center style='text-align:center'><b>Figure 4:</b>  Ativities of 20 suspicious employees (red nodes) and 42 associated employees (black nodes): <b>(a)</b> Network view <b>(b)</b> Timeline view - nodes vertically are ordered by their first activity <b>(c)</b> Timeline view - nodes are ordered by where they are most associated with.<span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+
+<!--
 <img src="Figures/f4.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 4:  Ativities of 20 suspicious and 42 associated employees (same data as in Figure 3): (a) network view (b) Timeline view - nodes are vertically ordered by where they are most associated with. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 4:  Ativities of 20 suspicious and 42 associated employees (same data as in Figure 3): (a) network view (b) Timeline view - nodes are vertically ordered by where they are most associated with. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>-->
 
-<img src="Figures/f5.png" alt="MC 3 VAST 2018" width="100%" >
+<img src="Figures/figure5.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
 <p class=MsoCaption align=center style='text-align:center'>Figure 5:  Purchase within the group of 20 suspicious employees: (a) Network view constrained vertically by the purchase flow (top is the purchaser) (b) Timeline view of 25 purchases. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 <div style='border:none;border-bottom:solid windowtext 1.0pt;mso-border-bottom-alt:
 solid windowtext .75pt;padding:0in 0in 1.0pt 0in'>
-<div style='border:none;border-bottom:solid windowtext 1.0pt;mso-border-bottom-alt:
-solid windowtext .75pt;padding:0in 0in 1.0pt 0in'>
 
-<br></div></div>
-
+<br></div>
+<br>
 
 <!-- QUESTION 3-->
-
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;text-indent:-.25in;mso-list:l0 level1 lfo2;
 tab-stops:list .5in;background:white'><![if !supportLists]><b style='mso-bidi-font-weight:
