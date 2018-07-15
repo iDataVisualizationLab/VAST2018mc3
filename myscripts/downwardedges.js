@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 400,
-    heightN = 400;
+var widthN = 500,
+    heightN = 500;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,9 +33,9 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", dis*2)
-        .symmetricDiffLinkLengths(dis/5)
-        .linkDistance(60)
+        //.flowLayout("y", 80)
+        .symmetricDiffLinkLengths(dis/8)
+        //.linkDistance(40)
         .start(10,20,20);
 
     // define arrow markers for graph links
@@ -64,7 +64,7 @@ function colaNetwork(nodes, links){
         })
         .attr("stroke-width", function (d){
             if (considerTime==d.time && d.category=="2"){
-                return 2;
+                return 5;
             }
             else
                 return 1.5;
@@ -120,6 +120,84 @@ function colaNetwork(nodes, links){
     node2.append("title")
         .text(function (d) { return people[d.id].first +" "+people[d.id].last;; });
 
+
+     // Network title 
+    svgNetwork.append("text")
+            .attr("class", "titleText")
+            .text(function() {
+                if (considerTime>0){
+                    var date = new Date (new Date("May 11, 2015 14:00").getTime() + (+considerTime*1000));         
+                    Date.prototype.yyyymmdd = function() {
+                          var mm = this.getMonth() + 1; // getMonth() is zero-based
+                          var dd = this.getDate();
+                          var hh = this.getHours();
+                          return [
+                              (mm>9 ? '' : '0') + mm,
+                              (dd>9 ? '' : '0') + dd,
+                              this.getFullYear()
+                            ].join('/') + " at "+this.toLocaleTimeString('en-US');
+                    };
+                    return date.yyyymmdd();
+                }
+                else
+                    return "";
+            })
+            .style("fill", "#000")
+            .style("text-anchor","middle")
+            .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+             .attr("font-family", "sans-serif")
+            .attr("font-size", 16)  
+            .attr("x", widthN/2)
+            .attr("y", heightN-10)     
+
+    svgNetwork.append("text")
+        .attr("class", "titleText")
+        .text(function() {
+            if (considerTime>0){
+                var date = new Date (new Date("May 11, 2015 14:00").getTime() + (+considerTime*1000));         
+                Date.prototype.yyyymmdd = function() {
+                      var mm = this.getMonth() + 1; // getMonth() is zero-based
+                      var dd = this.getDate();
+                      var hh = this.getHours();
+                      return [
+                          (mm>9 ? '' : '0') + mm,
+                          (dd>9 ? '' : '0') + dd,
+                          this.getFullYear()
+                        ].join('/') + " at "+this.toLocaleTimeString('en-US');
+                };
+                return date.yyyymmdd();
+            }
+            else
+                return "";
+        })
+        .style("fill", "#000")
+        .style("text-anchor","middle")
+        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+         .attr("font-family", "sans-serif")
+        .attr("font-size", 16)  
+        .attr("x", widthN/2)
+        .attr("y", heightN-10)   
+
+     svgNetwork.append("text")
+        .attr("class", "titleText")
+        .text(function() {
+            if (considerTime>0){
+                var name1 = people[suspiciousId1].first +" "+people[suspiciousId1].last;
+                var name2 = people[suspiciousId2].first +" "+people[suspiciousId2].last;
+
+
+                return "Suspicous purchase between "+name1 +" & "+name2;
+            }
+            else
+                return "";
+        })
+        .style("fill", "#000")
+        .style("text-anchor","middle")
+        .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+         .attr("font-family", "sans-serif")
+        .attr("font-size", 16)  
+        .attr("x", widthN/2)
+        .attr("y", heightN-30)     
 
 
     checkVisibility();

@@ -68,8 +68,10 @@ var minT=10000000000, maxT=0;
 var suspicious = {};
 var people = {};
 
-var considerTime = -10000000;  // Day 0
-              
+var considerTime = -10000000;  // Day 0      
+var suspiciousId1 =-1;
+var suspiciousId2 =-1;
+
 
 d3.csv("data/CompanyIndex.csv", function(error, data_) {
     data_.forEach(function (d) {
@@ -82,30 +84,30 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         // d3.csv("data/Suspicious.csv", function (error, data2) {
        // d3.csv("data/involved.csv", function (error, data2) {
 
-       //  d3.csv("data2/group.csv", function (error, data2) {
+      //   d3.csv("data2/group.csv", function (error, data2) {
        // d3.csv("data2/groupCalls.csv", function (error, data2) {      
-        d3.csv("data2/groupEmails.csv", function (error, data2) {      
+      //  d3.csv("data2/groupEmails.csv", function (error, data2) {      
       //   d3.csv("data2/groupPurchases.csv", function (error, data2) {      
      //     d3.csv("data2/groupMeeting.csv", function (error, data2) { 
 
-     // d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) { // has structure for 24 hours
+      //d3.csv("data3/suspiciousFromDay0.csv", function (error, data2) { // has structure for 24 hours
                                                                             // for 24 hours ->1000 nodes
-        //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) { // no structure for 48 hours
+       //d3.csv("data3/suspiciousFromDay1.csv", function (error, data2) { // no structure for 48 hours
        //  d3.csv("data3/suspiciousFromDay2.csv", function (error, data2) {
-        // d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
-       // d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {   // has structure for 24 hours
+       //  d3.csv("data3/suspiciousFromDay3.csv", function (error, data2) {
+        d3.csv("data3/suspiciousFromDay4.csv", function (error, data2) {   // has structure for 24 hours
        //  d3.csv("data3/suspiciousFromDay5.csv", function (error, data2) {  // has structure for 32 hours 700 nodes
-       // d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {   // has structure for 48 hours
+      //  d3.csv("data3/suspiciousFromDay6.csv", function (error, data2) {   // has structure for 48 hours
        //  d3.csv("data3/groupAll.csv", function (error, data2) {  // 1 day before and one day after 
 
        // d3.csv("data4/allInvolvedTransactions.csv", function (error, data2) {
-        // d3.csv("data4/allSuspiciousTransInPrev1Day.csv", function (error, data2) {
+       //  d3.csv("data4/allSuspiciousTransInPrev1Day.csv", function (error, data2) {  // For Question 4
 
        //  d3.csv("data4/all8HoursTrans.csv", function (error, data2) {
        // d3.csv("data4/all2HoursTrans.csv", function (error, data2) {
               if (error) throw error;
 
-             //data2[0].Time = 1214261;
+            //data2[0].Time = 1214261;
              //data2[0].Time = 1756767;
              //data2[0].Time = 7849426;
             //data2[0].Time = 48342647;    
@@ -115,17 +117,17 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             // data2[0].Time = 57827460;    
             
             
-             data2[0].Time = 74525933;   // suspicous
-            considerTime = +data2[0].Time;
+         //data2[0].Time = 74565933;   // suspicous
+          //  considerTime = +data2[0].Time;
 
 
-            /*
+            
             if (data2[0].Time!=undefined){
                 considerTime = +data2[0].Time;
 
                  data = data2.filter(function(d){
                     var time = +d["X4"];
-                    var interval = 113630;
+                    var interval = 24* 3600;
                     //var considerTime = 74565933;   // Question 2
 
                    //  var considerTime = 53206509;  // Day 0
@@ -140,7 +142,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     return (considerTime-interval<time && time<considerTime+interval);
                 });    
             }
-            else*/
+            else
                 data = data2;
            
             data.forEach(function (d) {
@@ -176,8 +178,6 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     terms[id2].degree++;
                     terms[id2].listTimes.push(time);
                 }
-
-
                 var l = new Object();
                 l.source = terms[id1];
                 l.target = terms[id2];
@@ -186,7 +186,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 l.category = d["X2"];
                 links.push(l);
             });
-            console.log("Done reading data nodes.length=" +nodes.length + "links.length=" +links.length);
+            console.log("Done reading data nodes.length=" +nodes.length + " links.length=" +links.length);
 
              // Compute followers *************************
              for (var i=0; i< links.length;i++) {
@@ -231,54 +231,26 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     links[i].target.neighbors.push(links[i].source);
             }
 
+            // *********************
+             var str =" "
+             for (var i=0; i< links.length;i++){
+                //if (links[i].category=="2" ){
+                if (links[i].time==considerTime && links[i].category=="2" ){
+                    var id1 = links[i].source.id;
+                    suspiciousId1 = id1;
+                    if (str.indexOf(" "+id1+" ") <0 )
+                        str+=id1 +" ";
+                    var id2 = links[i].target.id;
+                    suspiciousId2 = id2;
+                    if (str.indexOf(" "+id2+" ") <0 )
+                        str+=id2 +" ";
+                } 
+             }   
+             var str0 =str;
+             console.log("Str=" +str);
 
-            // Remove nodes of 1 neighbor *************************
-            /*removerNodes();
-            function removerNodes(){
-                nodes = nodes.filter(function(d){
-                    if (suspicious[d.id])
-                        return d;
-                    else
-                        return d.neighbors.length>1;
-                })
-                var str = " ";
-                for (var i=0; i<nodes.length;i++) {
-                    str += nodes[i].id+" ";
-                }
-                links = links.filter(function(d){
-                    if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
-                        return d;
-                });
-            }
              
-             nodes.forEach(function(d){
-                 d.neighbors = [];
-             })
-             // Compute neighbors *************************
-             for (var i=0; i< links.length;i++){
-                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
-                     links[i].source.neighbors.push(links[i].target);
-                 }
-                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
-                     links[i].target.neighbors.push(links[i].source);
-             }
-
-             // Remove nodes of 1 neighbor *************************
-             removerNodes();        
-             nodes.forEach(function(d){
-                 d.neighbors = [];
-             })
-             // Compute neighbors *************************
-             for (var i=0; i< links.length;i++){
-                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
-                     links[i].source.neighbors.push(links[i].target);
-                 }
-                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
-                     links[i].target.neighbors.push(links[i].source);
-             }
-             */
              // Remove nodes of PURCHASES **************************************************
-             /*
              var str =" "
              for (var i=0; i< links.length;i++){
                 //if (links[i].category=="2" ){
@@ -290,10 +262,10 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     if (str.indexOf(" "+id2+" ") <0 )
                         str+=id2 +" ";
                 } 
-             }   
-             console.log("Str=" +str);
+            }   
+            console.log("Str=" +str);
                
-             var str0 = "";
+            var str0 = "";
             var level =1;
             while (str0!=str){
                 str0 = str;
@@ -322,11 +294,55 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                     return d;
             });
             
-            */
+            
 
 
+            
+            // Remove nodes of 1 neighbor *************************
+            removerNodes(str0);
+            function removerNodes(str_){
+                nodes = nodes.filter(function(d){
+                    if (suspicious[d.id] || (str_!=undefined && str_.indexOf(d.id)>=0))
+                        return d;
+                    else
+                        return d.neighbors.length>1;
+                })
+                var str = " ";
+                for (var i=0; i<nodes.length;i++) {
+                    str += nodes[i].id+" ";
+                }
+                links = links.filter(function(d){
+                    if (str.indexOf(" "+d.source.id+" ")>=0 && str.indexOf(" "+d.target.id+" ")>=0)
+                        return d;
+                });
+            }
+             
+             nodes.forEach(function(d){
+                 d.neighbors = [];
+             })
+             // Compute neighbors *************************
+             for (var i=0; i< links.length;i++){
+                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
+                     links[i].source.neighbors.push(links[i].target);
+                 }
+                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                     links[i].target.neighbors.push(links[i].source);
+             }
 
-
+             // Remove nodes of 1 neighbor *************************
+             removerNodes(str0);        
+             nodes.forEach(function(d){
+                 d.neighbors = [];
+             })
+             // Compute neighbors *************************
+             for (var i=0; i< links.length;i++){
+                 if(isContainedChild(links[i].source.neighbors, links[i].target)<0) { // No duplicate elements{
+                     links[i].source.neighbors.push(links[i].target);
+                 }
+                 if(isContainedChild(links[i].target.neighbors, links[i].source)<0) // No duplicate elements
+                     links[i].target.neighbors.push(links[i].source);
+             }
+                 
              // Compute Suspicious nodes
             for (var i=0; i< nodes.length;i++){
                 if (suspicious[" "+nodes[i].id]+" ")
@@ -593,7 +609,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  2+ Math.pow((d.degree-1),0.2);
+   return  3+ Math.pow((d.degree-1),0.25);
 }
 
 function addLinks(links1) {
