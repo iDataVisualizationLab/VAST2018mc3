@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 600,
-    heightN = 600;
+var widthN = 500,
+    heightN = 500;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-       // .flowLayout("y", 80)
-        .symmetricDiffLinkLengths(23)
+        .flowLayout("y", 80)
+        .symmetricDiffLinkLengths(15)
         //.linkDistance(40)
         .start(10,20,20);
 
@@ -218,7 +218,7 @@ function colaNetwork(nodes, links){
                 targetX = d.target.x - (targetPadding * normX),
                 targetY = d.target.y - (targetPadding * normY);
 
-            var rScale = d3.scale.linear().range([dist, dist*5]);
+            var rScale = d3.scale.linear().range([dist*4, dist*15]);
             rScale.domain([0, maxT]); // Set time domain
             var r = rScale(d.time);
             return "M" + sourceX + "," + sourceY+ "A" + r + "," + r + " 0 0,1 " + targetX + "," + targetY;

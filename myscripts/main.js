@@ -84,8 +84,8 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
         // d3.csv("data/Suspicious.csv", function (error, data2) {
       //d3.csv("data/involved.csv", function (error, data2) {
 
-         d3.csv("data2/group.csv", function (error, data2) {
-       // d3.csv("data2/groupCalls.csv", function (error, data2) {      
+     //    d3.csv("data2/group.csv", function (error, data2) {
+        d3.csv("data2/groupCalls.csv", function (error, data2) {      
       //  d3.csv("data2/groupEmails.csv", function (error, data2) {      
       //   d3.csv("data2/groupPurchases.csv", function (error, data2) {      
       //    d3.csv("data2/groupMeeting.csv", function (error, data2) { 
