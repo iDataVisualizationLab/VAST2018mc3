@@ -1247,7 +1247,7 @@ Our visualization has 2 main components: The network view on the left and the ti
   <ul>
   <li>The network view is implemented using <a href="http://ialab.it.monash.edu/webcola/">Cola.js</a>. We adopted the Flow Layout to force employees at the destinations of these activities (people who are receiving a call, receiving an email, selling something to a buyer, or being invited to a meeting) occupy lower positions in the network. 
 </li>
-  <li> The timeline view shows the same input data, focusing on <b>when</b> an activitiy occurs. Each horizontal dashed line represents an employee's lifetime.   </li>
+  <li> The timeline view shows the same input data, focusing on <b>when</b> an activitiy occurs. Each horizontal dashed line represents an employee's lifetime. The timeline view allows to capture dynamics of the network.  </li>
 </ul>
 </p>
 
@@ -1313,24 +1313,22 @@ margin-left:.25in;text-align:justify;background:white'>
 <img src="Figures/figure9.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'><b>Figure 9:</b> Purchases within the group of 20 suspicious and 42 associated employees: (a) Network view (b) Timeline view. While Gail Feindt (the red node) appears to be the main distributor (of the purchases), the transaction between Rosalia Larroque and Jenice Savaria stand out as a suspisous purchase.   <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'><b>Figure 9:</b> Purchases within the group of 62 bad actors. While Gail Feindt (the <font color="#f44">red</font> node) appears to be the main distributor (of the purchases), the transaction between <font color="#b00">Rosalia Larroque</font> and <font color="#b00">Jenice Savaria</font> stand out as a suspisous purchase.   <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 
 
 <img src="Figures/figure10.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 10:  The group's organizational structure can be inferred partially through the meetings. This organizational structure changes over time. For example, Richard Fox does not invite Madeline Nindorf and Julie Tierno any longer after 2016. Instead, he met Meryl Pastuch who involved indirecly in the suspious purchase.<span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
-
-
+<p class=MsoCaption align=center style='text-align:center'>Figure 10:  The group's organizational structure can be inferred partially through the meetings. This organizational structure changes over time. For example, <font color="#b00">Richard Fox</font> does not invite Madeline Nindorf and <font color="#b00">Julie Tierno</font> any longer after 2016. Instead, he met <font color="#b00">Meryl Pastuch</font> who involved indirecly in the suspious purchase.<span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 
 
 <img src="Figures/figure11.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 11:  Purchases within the group of 20 suspicious and 42 associated employees: (a) Network view (b) Timeline view. While Gail Feindt (the red node) appears to be the main distributor (of the purchases), the transaction between Rosalia Larroque and Jenice Savaria stand out as a suspisous purchase.
-
+<p class=MsoCaption align=center style='text-align:center'>Figure 11:  Purchases within the group of 62 bad actors. The highlighted group had several meetings, calls, and emails leading to the final purchase from <font color="#b00">Rosalia Larroque</font> to <font color="#b00">Jenice Savaria</font>.</p>
+ 
 
 <img src="Figures/figure12.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
@@ -1356,32 +1354,32 @@ color:#444444'><span style='mso-list:Ignore'>4.<span style='font:7.0pt "Times Ne
 </span></span></span></b><![endif]><b style='mso-bidi-font-weight:normal'><span
 style='font-family:Arial;mso-fareast-font-family:"Times New Roman";color:#444444'>The insider has provided a list of purchases that might indicate illicit activity elsewhere in the company. Using the structure of the first group noted by the insider as a model can you find any other instances of suspicious activities in the company? Are there other groups that have structure and activity similar to this one? Who are they? Each of the suspicious purchases could be a starting point for your search. Provide examples of up to two other groups you find that appear suspicious and compare their structure with the structure of the first group. The structures should be presented as temporal not just structural (i.e., the sequence of events-A is followed by B one or two days later- will be important). Limit your responses to 10 images and 1200 words.<o:p></o:p></span></b></p>
 
-
+<br>
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-Starting from the list of purchases that might indicate illicit activity elsewhere in the company, we expand our search to other related activities of 1 day before and 1 day after (link crawling). The following figure shows an overview of the obtained data. Rings in the network on the left represent associated employees extracted at different levels (from the suspicous events) in the crawling process. Vetical collumns in the timeline present activities around the suspicous purchases provided by the insider.</p>
+Starting from the list of purchases that might indicate illicit activity elsewhere in the company, we expand our search to other related activities of 1 day before and 1 day after (link crawling). The following figure shows an overview of the obtained data. Rings in the network on the left represent associated employees extracted at different levels (from the suspicous events) in the crawling process. Vertical collumns in the timeline present activities around the suspicous purchases provided by the insider. We will inspect each collumn at a time in Figure 14, 15, and 16.</p>
 
 <img src="Figures/figure13.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 13:  Related employees and activities happened 1 day before and after the suspicous purchases provided by the insider. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 13:  Kasios's employees and their activities in 1 day before and 1 day after the suspicous purchases provided by the insider. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 
 
 <img src="Figures/f14.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 14:  Another group with similar structure. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 14:  Starting from the purchase between Trevor Weeb and Tyree Barreneche, we retrieved other related employees in 4 levels of seperation (we can crawl further levels which ends up thousands of employees to show in the network). We can see that this group is seperated from the main network which contains all purchase through <font color="#f44">Gail Feindt</font>, the main distributor of Kasios International. These unusual communications leading to the final purchase is similar to the structure of the first group identified in Figure 11. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 <img src="Figures/f15.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 15:  Another group with similar structure. <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 15:  Another example of a group with similar structure. In this example, we start the crawling process from the purchase between Laure and Carlos Morris on June 21, 2017 at 8:05 AM. All related people and activities within 24 hours of the purchase transaction are labled in the network on the left. Again, the purchase was perform through a new name Carlos Morris (not the main Kasios's distributor). Moreover, we can easily notice in the timeline view: there are many cliques of 3 employees right before and after every purchase. We will inspect this temporal structure futher in the next Figure.  <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 <img src="Figures/f16.png" alt="MC 3 VAST 2018" width="100%" >
 <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
 margin-left:.25in;text-align:justify;background:white'>
-<p class=MsoCaption align=center style='text-align:center'>Figure 16: Full picture of 1-hour communications beween different groups within Kasios International dataset. It is chracterized by cliques of 3.  <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
+<p class=MsoCaption align=center style='text-align:center'>Figure 16: Full picture of 1-hour communications beween different groups within Kasios International dataset. The networks are chracterized by cliques of 3.  <span style='font-family:Arial;font-size:12pt;color:#444444'><o:p></o:p></span></p>
 
 
 
@@ -1457,16 +1455,7 @@ AA8AAAAAAAAAAAAAAAAADAUAAGRycy9kb3ducmV2LnhtbFBLBQYAAAAABAAEAPMAAAAWBgAAAAA=
 </v:shapetype><![endif]--><!--[if mso & !supportInlineShapes & supportFields]><v:shape
  id="_x0000_i1025" type="#_x0000_t75" style='width:961pt;height:752pt'>
  <v:imagedata croptop="-65520f" cropbottom="65520f"/>
-</v:shape><span style='mso-element:field-end'></span><![endif]--><span
-style='font-family:Arial;mso-fareast-font-family:"Times New Roman";color:#444444'><o:p></o:p></span></p>
-
-
-<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-margin-left:.5in;text-align:justify;background:white'><span style='font-family:
-Arial;mso-fareast-font-family:"Times New Roman";color:#444444'><o:p>&nbsp;</o:p></span></p>
-
-</div>
-
+</v:shape><span style='mso-element:field-end'></span><![endif]-->
 </body>
 
 </html>

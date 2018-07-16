@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", 80)
-        .symmetricDiffLinkLengths(15)
+       // .flowLayout("y", 10)
+        .symmetricDiffLinkLengths(4)
         //.linkDistance(40)
         .start(10,20,20);
 
@@ -177,7 +177,7 @@ function colaNetwork(nodes, links){
         .attr("font-size", 16)  
         .attr("x", widthN/2)
         .attr("y", heightN-10)   
-
+/*
      svgNetwork.append("text")
         .attr("class", "titleText")
         .text(function() {
@@ -195,7 +195,7 @@ function colaNetwork(nodes, links){
          .attr("font-family", "sans-serif")
         .attr("font-size", 16)  
         .attr("x", widthN/2)
-        .attr("y", heightN-30)     
+        .attr("y", heightN-30)     */
 
 
     checkVisibility();
