@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 500,
-    heightN = 500;
+var widthN = 400,
+    heightN = 400;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", 80)
-        .symmetricDiffLinkLengths(dis/4.5)
+       // .flowLayout("y", 10)
+        .symmetricDiffLinkLengths(14)
         //.linkDistance(40)
         .start(10,20,20);
 
@@ -64,13 +64,13 @@ function colaNetwork(nodes, links){
         })
         .attr("stroke-width", function (d){
             if (considerTime==d.time && d.category=="2"){
-                return 5;
+                return 3;
             }
             else
-                return 1.5;
+                return 2;
         });
 
-/*
+
         svgNetwork.selectAll(".nodeText").remove();
         svgNetwork.selectAll(".nodeText")
             .data(nodes).enter().append("text")
@@ -94,11 +94,11 @@ function colaNetwork(nodes, links){
                 if (suspicious[d.id]!=undefined)
                     return 13;
                 else
-                    return 5+getNodeSize(d);
+                    return 8+getNodeSize(d);
             })
             .on("mouseover", mouseoverNode)
             .on("mouseout", mouseoutNode);
-*/
+
 
     var node2 = svgNetwork.selectAll(".node2")
         .data(nodes)
@@ -177,15 +177,13 @@ function colaNetwork(nodes, links){
         .attr("font-size", 16)  
         .attr("x", widthN/2)
         .attr("y", heightN-10)   
-
+/*
      svgNetwork.append("text")
         .attr("class", "titleText")
         .text(function() {
             if (considerTime>0){
                 var name1 = people[suspiciousId1].first +" "+people[suspiciousId1].last;
                 var name2 = people[suspiciousId2].first +" "+people[suspiciousId2].last;
-
-
                 return "Suspicous purchase between "+name1 +" & "+name2;
             }
             else
@@ -197,7 +195,7 @@ function colaNetwork(nodes, links){
          .attr("font-family", "sans-serif")
         .attr("font-size", 16)  
         .attr("x", widthN/2)
-        .attr("y", heightN-30)     
+        .attr("y", heightN-30)     */
 
 
     checkVisibility();
@@ -220,7 +218,7 @@ function colaNetwork(nodes, links){
                 targetX = d.target.x - (targetPadding * normX),
                 targetY = d.target.y - (targetPadding * normY);
 
-            var rScale = d3.scale.linear().range([dist, dist*5]);
+            var rScale = d3.scale.linear().range([dist/2, dist*5]);
             rScale.domain([0, maxT]); // Set time domain
             var r = rScale(d.time);
             return "M" + sourceX + "," + sourceY+ "A" + r + "," + r + " 0 0,1 " + targetX + "," + targetY;

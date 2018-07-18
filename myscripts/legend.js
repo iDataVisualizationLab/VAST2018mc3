@@ -23,7 +23,7 @@ var color2 = "#000";
 var durationTime =2000;
 var yStart = 30;
 
-var arcOpacity = 0.5;
+var arcOpacity = 1;
 
 function colores_google(n) {
     var colores_g = ["#3060aa", "#f80", "#f00", "#10aa18", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
@@ -413,8 +413,8 @@ function buttonClick1(){
    var stepY =1;
    if (nodes.length>0)        
         stepY = (height-150)/nodes.length  
-    if (stepY>10)
-        stepY =10;            
+    if (stepY>13)
+        stepY =13;
     nodes2.forEach(function(d,i) {
         d.yy = yStart+i*stepY;
     });

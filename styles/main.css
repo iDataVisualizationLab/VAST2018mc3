@@ -34,7 +34,7 @@
 .linkArc {
   fill: none;
   stroke: #000;
-
+  marker-end: url(#end-arrow);
 }
 
 .node circle {
