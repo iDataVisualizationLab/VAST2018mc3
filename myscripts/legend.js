@@ -413,8 +413,8 @@ function buttonClick1(){
    var stepY =1;
    if (nodes.length>0)        
         stepY = (height-150)/nodes.length  
-    if (stepY>10)
-        stepY =10;            
+    if (stepY>13)
+        stepY =13;
     nodes2.forEach(function(d,i) {
         d.yy = yStart+i*stepY;
     });
