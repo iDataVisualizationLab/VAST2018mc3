@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-       // .flowLayout("y", 10)
-        .symmetricDiffLinkLengths(14)
+        .flowLayout("y", 50)
+        .symmetricDiffLinkLengths(34)
         //.linkDistance(40)
         .start(10,20,20);
 

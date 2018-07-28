@@ -1,62 +1,94 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
 {\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Roman;}
 {\colortbl;\red255\green255\blue255;\red170\green0\blue3;\red0\green0\blue0;\red53\green66\blue87;
-\red252\green42\blue53;\red52\green52\blue52;\red255\green255\blue255;}
+\red53\green66\blue87;\red170\green0\blue3;\red0\green0\blue0;\red252\green42\blue53;\red52\green52\blue52;
+\red255\green255\blue255;}
 {\*\expandedcolortbl;;\cssrgb\c73333\c0\c0;\cssrgb\c0\c0\c0;\cssrgb\c26667\c32941\c41569;
-\cssrgb\c100000\c26667\c26667;\cssrgb\c26667\c26667\c26667;\cssrgb\c100000\c100000\c100000;}
+\cssrgb\c26667\c32941\c41569;\cssrgb\c73333\c0\c0;\csgenericrgb\c0\c0\c0;\cssrgb\c100000\c26667\c26667;\cssrgb\c26667\c26667\c26667;
+\cssrgb\c100000\c100000\c100000;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
-\margl1440\margr1440\vieww25780\viewh18560\viewkind0
+\margl1440\margr1440\vieww32200\viewh26820\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs36 \cf0 \
 To explore the organizational and temporal structure, our system provides two different components: network view and timeline view. \
-\
 In the network view,  \cf2 \expnd0\expndtw0\kerning0
 darker red\cf3  nodes are suspicious people. Links are color-coded by activity category. 
 \f1 The timeline view captures the dynamics of the network. Each horizontal dashed line represents an employee. \
-\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 3000]] 
+\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 2000]] 
 \fs36 \cf3 \expnd0\expndtw0\kerning0
 \
-A link at different time points encode the employee\'92s activities.  Mousing over a node highlight all related activity of the selected employee.\
+A arc at different time points encode the employee\'92s activities.  Mousing over a node highlight all related activity of the selected employee.\
 
-\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 3000]] \
+\fs24 \cf0 \kerning1\expnd0\expndtw0 \
+\
+\
+[[slnc 3000]] \
 \pard\pardeftab720\sl280\partightenfactor0
 
 \fs36 \cf3 \expnd0\expndtw0\kerning0
 We can filter by activity type. For example, when we select meetings; only employees attend at least 1 meeting within the group of 62 bad factors are shown. As 
 \f0 the network view adopt flow layout, \cf0 \kerning1\expnd0\expndtw0 t
 \i \cf4 \expnd0\expndtw0\kerning0
-he group's organizational structure can be inferred partially through the meetings. This structure changes over time. For example,\'a0\cf2 Richard Fox\cf4 \'a0does not invite Madeline Nindorf and\'a0\cf2 Julie Tierno\cf4 \'a0any longer after 2016. Instead, he met\'a0\cf2 Meryl Pastuch\cf4 \'a0who involved indirectly in the suspicious purchase shown later.
+he group's organizational structure can be inferred partially through the meetings. This structure changes over time. For example,\'a0\cf2 Richard Fox\cf4 \'a0does not meet Madeline Nindorf and\'a0\cf2 Julie Tierno\cf4 \'a0any longer after 2016. Instead, he met\'a0\cf2 Meryl Pastuch\cf4 \'a0who later involved in the suspicious purchase.
 \f1\i0 \cf3  \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 \cf3  \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 3000]] 
+\fs36 \cf3 \expnd0\expndtw0\kerning0
+\
+When filtering by Phone Calls, we can easily detect a group of employee who have strong connections and other suspicious entities who communicate occasionally. The timeline view reveal that the overall phone calls are decreased overtime. Within suspicious groups, phone calls are more often in 2015 and 2016 
+\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 1000]] 
+\fs36 \cf3 \expnd0\expndtw0\kerning0
+ in 2017 phone call are only between a smaller groups. \
+
+\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 1000]] 
+\fs36 \cf3 \expnd0\expndtw0\kerning0
+\
+Similar observations can be found in the email exchanges. \
+
+\fs24 \cf0 \kerning1\expnd0\expndtw0 [[slnc 2000]] 
+\fs36 \cf3 \expnd0\expndtw0\kerning0
+\
+However this is not true for purchase transactions. The number of transactions are stable overtime. In the network view, Gail Feindt appears to be the main distributor of Kasios company. We can also easily notice the outlier transaction 
+\f0\i\fs29\fsmilli14667 \cf5 \outl0\strokewidth0 \strokec5 between\'a0\cf6 \strokec6 Rosalia Larroque\cf5 \strokec5 \'a0and\'a0\cf6 \strokec6 Jenice Savaria \cf7 in October 2017. 
+\f1\i0\fs36 \cf3 \outl0\strokewidth0 \
+ \
+\
+ \
+\
+\
+\
 When filtering by Calls or Emails, we can see that both call and email communication decrease over time. However, this is not true for purchases transactions. 
-\f0\i \cf4 While Gail Feindt (the\'a0\cf5 red\cf4 \'a0node) appears to be the main distributor of the purchases, the transaction between\'a0\cf2 Rosalia Larroque\cf4 \'a0and\'a0\cf2 Jenice Savaria\cf4 \'a0stand out as a suspicious purchase.
+\f0\i \cf4 While Gail Feindt (the\'a0\cf8 red\cf4 \'a0node) appears to be the main distributor of the purchases, the transaction between\'a0\cf2 Rosalia Larroque\cf4 \'a0and\'a0\cf2 Jenice Savaria\cf4 \'a0stand out as a suspicious purchase.
 \f1\i0 \cf3 \
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0 We now focus on the communication within this group 1 month before and one month after the suspicious purchase. As we can see the sub- group who involve in the suspicious purchase stood out. In particular, Richard Fox who used to purchase from the main distributor Gail Feindt now initiated a meeting with Sh\
+\f0 \cf3 We now focus on the communication within this group 1 month before and one month after the suspicious purchase. As we can see the sub- group who involve in the suspicious purchase stood out. In particular, Richard Fox who used to purchase from the main distributor Gail Feindt now initiated a meeting with Sh\
 \
-\cf6 \cb7 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf9 \cb10 \kerning1\expnd0\expndtw0 \
 \'95	\expnd0\expndtw0\kerning0
 Provide a clear explanation how the visual analytics software you developed or used helped you analyze the data.\cb1 \
 \pard\tx220\tx720\pardeftab720\li720\fi-720\sl320\partightenfactor0
-\ls1\ilvl0\cf6 \cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cf9 \cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 Give a clear explanation of your starting point for analysis and how you selected it\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 Explain your rationale for important design decisions.\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 Explain how the visualization and interactions helped in the analysis.\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 If filters or transformations are applied, explain what was used and in what sequence they were applied.\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 If there are anomalies shown in a visualization, explain how they are factored into the analysis.\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 Give a careful definition of terms used such as \'93uncertainty.\'94\cb1 \
-\ls1\ilvl0\cb7 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
+\ls1\ilvl0\cb10 \kerning1\expnd0\expndtw0 {\listtext	\'95	}\expnd0\expndtw0\kerning0
 Describe any important assumptions you made.\cb1 \
 }
