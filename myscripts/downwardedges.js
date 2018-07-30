@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
-var widthN = 400,
-    heightN = 400;
+var widthN = 700,
+    heightN = 700;
 
 var  svgNetwork = d3.select("#networkPanel")
     .append("svg")
@@ -33,8 +33,8 @@ function colaNetwork(nodes, links){
         .nodes(nodes)
         .links(links)
        // .jaccardLinkLengths(140,0.7)
-        .flowLayout("y", 50)
-        .symmetricDiffLinkLengths(34)
+        .flowLayout("y", 10)
+        .symmetricDiffLinkLengths(30)
         //.linkDistance(40)
         .start(10,20,20);
 
@@ -70,7 +70,7 @@ function colaNetwork(nodes, links){
                 return 2;
         });
 
-
+        /*
         svgNetwork.selectAll(".nodeText").remove();
         svgNetwork.selectAll(".nodeText")
             .data(nodes).enter().append("text")
@@ -98,7 +98,7 @@ function colaNetwork(nodes, links){
             })
             .on("mouseover", mouseoverNode)
             .on("mouseout", mouseoutNode);
-
+        */
 
     var node2 = svgNetwork.selectAll(".node2")
         .data(nodes)
@@ -176,8 +176,8 @@ function colaNetwork(nodes, links){
          .attr("font-family", "sans-serif")
         .attr("font-size", 16)  
         .attr("x", widthN/2)
-        .attr("y", heightN-10)   
-/*
+        .attr("y", heightN-10)
+
      svgNetwork.append("text")
         .attr("class", "titleText")
         .text(function() {
@@ -195,7 +195,7 @@ function colaNetwork(nodes, links){
          .attr("font-family", "sans-serif")
         .attr("font-size", 16)  
         .attr("x", widthN/2)
-        .attr("y", heightN-30)     */
+        .attr("y", heightN-30)
 
 
     checkVisibility();
