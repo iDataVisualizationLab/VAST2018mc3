@@ -147,9 +147,16 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
             data.forEach(function (d) {
                 // var year =  new Date(d.date).getMonth();
                 var time = +d["X4"];
+
+                //if (time<0300123) {
+                //  return;
+                //}
+
                 minT = Math.min(minT, time);
                 maxT = Math.max(maxT, time);
 
+                console.log ("minT= "+minT)
+                
                 var id1 = +d["X1"];
                 if (terms[id1] == undefined) {
                     terms[id1] = new Object();
@@ -186,7 +193,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 links.push(l);
             });
             console.log("Done reading data nodes.length=" +nodes.length + " links.length=" +links.length);
-
+ 
              // Compute followers *************************
              for (var i=0; i< links.length;i++) {
                 if (suspicious[links[i].source.id] && suspicious[links[i].target.id]) {
@@ -447,11 +454,16 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 .attr("class", "nodeText")
                 .text(function(d) {
                     if (suspicious[d.id]!=undefined)
-                        return suspicious[d.id].first +" "+suspicious[d.id].last;
+                        //return suspicious[d.id].first +" "+suspicious[d.id].last;
+                      return suspicious[d.id].first +" ";
                     else
-                        return people[d.id].first +" "+people[d.id].last;
-                })
+                      //  return people[d.id].first +" "+people[d.id].last;
+                      return people[d.id].first ;
+
+
+                 })
                 .attr("dy", "4px")
+                .attr("dx", "-18px")
                 .style("fill", function(d){
                     if (suspicious[d.id])
                         return colorSuspicious;
@@ -593,6 +605,16 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 .attr("fill", "#E6E7E8");
             //end slider part-----------------------------------------------------------------------------------
 
+            
+
+            nodes.sort(function(a,b){
+              if (a.degree>b.degree)
+                return -1;
+              else
+                return 1;
+
+            });
+
             nodeCurrent = [];
             for (var i=0;i<nodeSuspicious.length;i++){
                 nodeCurrent.push(nodeSuspicious[i]);
@@ -609,6 +631,15 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
                 if (str.indexOf(" "+links[i].source.id+" ")>=0 && str.indexOf(" "+links[i].target.id+" ")>=0)
                     linkCurrent.push(links[i]);
             }
+
+            nodeCurrent.sort(function(a,b){
+              if (a.degree>b.degree)
+                return -1;
+              else
+                return 1;
+
+            });
+
            // colaNetwork(nodeCurrent, linkCurrent);
            // colaNetwork(nodeSuspicious, linkSuspicious)
             colaNetwork(nodes, links);
@@ -636,7 +667,7 @@ d3.csv("data/CompanyIndex.csv", function(error, data_) {
 
 
 function getNodeSize(d) {
-   return  2+ Math.pow(d.neighbors.length,0.6);
+   return  5+ Math.pow(d.neighbors.length,0.6);
 }
 
 function addLinks(links1) {
@@ -742,7 +773,7 @@ function mouseoutNode() {
 function linkArc(d) {
     var dx = d.target.xx - d.source.xx,
         dy = d.target.yy - d.source.yy,
-        dr = Math.sqrt(dx * dx + dy * dy)*2;
+        dr = Math.sqrt(dx * dx + dy * dy)/2;
    // if (d.source.y<d.target.y )
         return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
    // else
@@ -752,11 +783,11 @@ function linkArc(d) {
 function linkArc2(d) {
     var xx = xScale(d.time),
         dy = d.target.yy - d.source.yy,
-        dr = dy*2;
- //   if (d.source.y<d.target.y )
+        dr = dy;
+  // if (d.source.yy<d.target.yy)
         return "M" + xx + "," + d.source.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.target.yy;
- //   else
- //       return "M" + xx + "," + d.target.y + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.source.y;
+  //  else
+  //      return "M" + xx + "," + d.target.yy + "A" + dr + "," + dr + " 0 0,1 " + xx + "," + d.source.yy;
 }
 
 

@@ -397,7 +397,7 @@ function restart(nodes2,links2) {
 
 
 
-function buttonClick1(){
+function buttonClick1(){    
     nodes2 = [];
     nodes.forEach(function(d) {
         nodes2.push(d);
@@ -407,9 +407,25 @@ function buttonClick1(){
         d.xx=xScale(d.listTimes[0]);
         d.yy =0;
     });
-   //nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
+    //nodes2.sort(function (a, b) { return (a.y > b.y) ? 1 : -1;});
     nodes2.sort(function (a, b) { return (a.listTimes[0] > b.listTimes[0]) ? 1 : -1;});
-          
+    
+    /* For Vung paper on the dual network views
+    nodes2.forEach(function(d,i) {
+         d.order =0;
+        if (i==18)
+            d.order =50;
+        if (i==19)
+            d.order =100;
+        if (i==10)
+            d.order =99;
+        if (i==7)
+            d.order =98;
+    });
+    nodes2.sort(function (a, b) { return (a.order > b.order) ? 1 : -1;});
+   */
+
+  
    var stepY =1;
    if (nodes.length>0)        
         stepY = (height-150)/nodes.length  
@@ -443,6 +459,7 @@ function buttonClick1(){
 
 
 function orderNodesTimeline(){
+
     nodes.forEach(function(d) {
         d.xx=xScale(d.listTimes[0]);
         d.yy =0;
